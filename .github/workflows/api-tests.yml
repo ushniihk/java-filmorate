@@ -44,7 +44,7 @@ jobs:
         run: nohup mvn spring-boot:run &
 
       - name: Waiting for application is up
-        run: /tmp/wait-for-it.sh -t 120 localhost:8080 -- echo "application is up"
+        run: /tmp/wait-for-it.sh -t 300 localhost:8080 -- echo "application is up"
 
       - name: Run POSTMAN tests
         run: |
