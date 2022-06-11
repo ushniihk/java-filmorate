@@ -30,10 +30,9 @@ public class FilmController {
                 log.debug("Oh, no. validation failed");
                 throw new ValidationException("oh, something was wrong");
             } else
-                film.setId(counterID);
+                film.setId(counterID++);
             films.put(film.getId(), film);
             log.debug("added: {}", film.toString());
-            counterID++;
         return film;
     }
 

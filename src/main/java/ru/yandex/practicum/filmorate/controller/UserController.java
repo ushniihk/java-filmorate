@@ -32,13 +32,12 @@ public class UserController {
             log.debug("Oh, no. validation failed");
             throw new ValidationException("oh, something was wrong");
         } else {
-            if ((user.getName() == null) || user.getName().isEmpty()) {
+            if (!StringUtils.hasText(user.getName())) {
                 user.setName(user.getLogin());
             }
-            user.setId(counterID);
+            user.setId(counterID++);
             users.put(user.getId(), user);
             log.debug("added: {}", user.toString());
-            counterID++;
         }
         return user;
     }
