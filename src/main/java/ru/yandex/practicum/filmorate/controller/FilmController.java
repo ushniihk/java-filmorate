@@ -1,51 +1,66 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.time.LocalDate;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @RestController
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private ConcurrentMap<Integer, Film> films = new ConcurrentHashMap();
-    private int counterID = 1;
+    FilmStorage filmStorage;
+    FilmService filmService;
+    UserStorage userStorage;
+
+    public FilmController(FilmStorage filmStorage, UserStorage userStorage, FilmService filmService) {
+        this.filmStorage = filmStorage;
+        this.filmService = filmService;
+        this.userStorage = userStorage;
+    }
 
     @GetMapping
     public Collection<Film> findAll() {
-        return films.values();
+        return filmStorage.findAll();
     }
 
     @PostMapping
     public Film create(@RequestBody Film film) throws ValidationException {
-            if (films.containsValue(film) || (!StringUtils.hasText(film.getName())) || (film.getDescription().length() > 200)
-                    || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
-                    || (film.getDuration() < 0)) {
-                log.debug("Oh, no. validation failed");
-                throw new ValidationException("oh, something was wrong");
-            } else
-                film.setId(counterID++);
-            films.put(film.getId(), film);
-            log.debug("added: {}", film.toString());
-        return film;
+        return filmStorage.create(film);
     }
 
     @PutMapping
-    public Film update(@RequestBody Film film) throws ValidationException {
-            if ((!StringUtils.hasText(film.getName())) || (film.getDescription().length() > 200)
-                    || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))
-                    || (film.getDuration() < 0) || (film.getId() < 0)) {
-                log.debug("Oh, no. validation failed");
-                throw new ValidationException("oh, something was wrong");
-            } else
-                films.put(film.getId(), film);
-            log.debug("updated: {}", film.toString());
-        return film;
+    public Film update(@RequestBody Film film) throws NotFoundParameterException {
+       return filmStorage.update(film);
     }
+
+    @GetMapping("/{id}")
+    public Film findFilm(@PathVariable Integer id) throws NotFoundParameterException {
+        return filmStorage.getFilm(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public Integer userLikesTheFilm(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        return filmService.addLike(filmStorage.getFilm(id), userStorage.getUser(userId));
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public Integer userDeleteLike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        return filmService.deleteLike(filmStorage.getFilm(id), userStorage.getUser(userId));
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count) throws IncorrectParameterException {
+        if (count <= 0)
+            throw new IncorrectParameterException("count");
+        return filmService.getTopFilmsByLikes(filmStorage.findAll(), count);
+    }
+
 }

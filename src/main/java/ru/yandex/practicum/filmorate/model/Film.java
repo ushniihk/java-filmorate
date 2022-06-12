@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -15,4 +17,15 @@ public class Film {
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
+    @EqualsAndHashCode.Exclude
+    private Set<Integer> likes = new TreeSet<>();
+
+    public void addLike(Integer userId) {
+        likes.add(userId);
+    }
+
+    public void deleteLike(Integer userId) {
+        likes.remove(userId);
+    }
+
 }
