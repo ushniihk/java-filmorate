@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -17,7 +16,7 @@ class UserControllerTest {
 
     @Test
     void shouldCreateNewUser() throws CreatingException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         userController.create(user);
         assertTrue(userController.findAll().contains(user));
@@ -26,7 +25,7 @@ class UserControllerTest {
 
     @Test
     void shouldNotCreateBecauseEmailIsInvalid() {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail-mail.ru", "login", LocalDate.parse("2022-01-27"));
         final CreatingException exception = assertThrows(
                 CreatingException.class,
@@ -37,7 +36,7 @@ class UserControllerTest {
 
     @Test
     void shouldNotCreateBecauseUserIsAlreadyExist() throws CreatingException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user1 = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         userController.create(user);
@@ -50,7 +49,7 @@ class UserControllerTest {
 
     @Test
     void shouldNotCreateBecauseLoginIsInvalid() {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user2 = new User("mail@mail.ru", "log in", LocalDate.parse("2022-01-27"));
         final CreatingException exception = assertThrows(
                 CreatingException.class,
@@ -60,7 +59,7 @@ class UserControllerTest {
 
     @Test
     void shouldNotCreateBecauseLoginIsEmpty() {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "", LocalDate.parse("2022-01-27"));
         final CreatingException exception = assertThrows(
                 CreatingException.class,
@@ -70,7 +69,7 @@ class UserControllerTest {
 
     @Test
     void shouldNotCreateBecauseBirthDayIsInFuture() {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2023-01-27"));
         final CreatingException exception = assertThrows(
                 CreatingException.class,
@@ -80,7 +79,7 @@ class UserControllerTest {
 
     @Test
     void shouldUpdate() throws CreatingException, UpdateException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         user2.setId(1);
@@ -92,7 +91,7 @@ class UserControllerTest {
 
     @Test
     void shouldGetUser() throws CreatingException, NotFoundParameterException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         userController.create(user);
@@ -103,7 +102,7 @@ class UserControllerTest {
 
     @Test
     void shouldAddFriend() throws NotFoundParameterException, CreatingException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         User user3 = new User("mail@mail.ru", "login3", LocalDate.parse("2022-01-27"));
@@ -119,7 +118,7 @@ class UserControllerTest {
 
     @Test
     void shouldDeleteFriend() throws NotFoundParameterException, CreatingException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         userController.create(user);
@@ -132,7 +131,7 @@ class UserControllerTest {
 
     @Test
     void shouldShowAllFriends() throws CreatingException, NotFoundParameterException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         userController.create(user);
@@ -143,7 +142,7 @@ class UserControllerTest {
 
     @Test
     void shouldShowCommonFriends() throws CreatingException, NotFoundParameterException {
-        UserController userController = new UserController(new InMemoryUserStorage(), new UserService());
+        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = new User("mail@mail.ru", "login", LocalDate.parse("2022-01-27"));
         User user2 = new User("mail@mail.ru", "login2", LocalDate.parse("2022-01-27"));
         User user3 = new User("mail@mail.ru", "login3", LocalDate.parse("2022-01-27"));

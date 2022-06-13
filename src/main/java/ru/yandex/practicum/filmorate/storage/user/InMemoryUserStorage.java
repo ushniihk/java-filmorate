@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
-    private ConcurrentMap<Integer, User> users = new ConcurrentHashMap();
+    private final ConcurrentMap<Integer, User> users = new ConcurrentHashMap();
     private int counterID = 1;
 
     @Override
@@ -66,15 +66,15 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> showAllFriends(Integer id){
-        List<User>list = new ArrayList<>();
+    public Collection<User> showAllFriends(Integer id) {
+        List<User> list = new ArrayList<>();
         users.get(id).getFriends().forEach(i -> list.add(users.get(i)));
         return list;
     }
 
     @Override
-    public Collection<User> showCommonFriends(Integer id, Integer otherId){
-        List<User>list = new ArrayList<>();
+    public Collection<User> showCommonFriends(Integer id, Integer otherId) {
+        List<User> list = new ArrayList<>();
         users.get(id).getFriends().stream()
                 .filter(users.get(otherId).getFriends()::contains)
                 .forEach(i -> list.add(users.get(i)));
@@ -82,7 +82,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private boolean checkID(Integer id) {
-        return   (id == null || id < 0);
+        return (id == null || id < 0);
     }
 
 }

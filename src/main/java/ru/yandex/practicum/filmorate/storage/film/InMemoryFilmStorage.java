@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private ConcurrentMap<Integer, Film> films = new ConcurrentHashMap();
+    private final ConcurrentMap<Integer, Film> films = new ConcurrentHashMap();
     private int counterID = 1;
 
     @Override

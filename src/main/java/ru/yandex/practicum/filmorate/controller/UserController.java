@@ -1,64 +1,59 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
 
 @RestController
 @Slf4j
+@Data
 @RequestMapping("/users")
 public class UserController {
-    UserStorage userStorage;
-    UserService userService;
-
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @GetMapping
     public Collection<User> findAll() {
-        return userStorage.findAll();
+        return userService.findAll();
     }
 
     @PostMapping
     public User create(@RequestBody User user) throws CreatingException {
-        return userStorage.create(user);
+        return userService.create(user);
     }
 
     @PutMapping
     public User update(@RequestBody User user) throws UpdateException {
-        return userStorage.update(user);
+        return userService.update(user);
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Integer id) throws NotFoundParameterException {
-        return userStorage.getUser(id);
+        return userService.getUser(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
-        return userStorage.getUser(userService.addFriend(userStorage.getUser(id), userStorage.getUser(friendId)));
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
+        userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
-        return userStorage.getUser(userService.deleteFriend(userStorage.getUser(id), userStorage.getUser(friendId)));
+    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
+        userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public Collection<User> getFriends(@PathVariable Integer id) {
-        return userStorage.showAllFriends(id);
+        return userService.showAllFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> showCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
-        return userStorage.showCommonFriends(id, otherId);
+        return userService.showCommonFriends(id, otherId);
     }
 
 
