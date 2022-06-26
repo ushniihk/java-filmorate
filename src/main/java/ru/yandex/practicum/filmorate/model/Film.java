@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import ru.yandex.practicum.filmorate.model.enums.Genre;
+import ru.yandex.practicum.filmorate.model.enums.Rating_MPA;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,6 +19,9 @@ public class Film {
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
+    private final Genre genre;
+    private final Rating_MPA rating_mpa;
+
     @EqualsAndHashCode.Exclude
     private Set<Integer> likes = new TreeSet<>();
 

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import ru.yandex.practicum.filmorate.model.enums.Friendship;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class User {
     private int id;
     private final String email;
     private final String login;
+    private final Friendship friendship;
     @Setter
     @EqualsAndHashCode.Exclude
     private String name;
