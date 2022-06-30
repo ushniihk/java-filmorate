@@ -24,5 +24,5 @@ Template repository for Filmorate project.
     WHERE user_id = "id") 
     AND user_id IN (SELECT user.user_id 
     FROM user JOIN friends ON user.user_id = friends.user_id) 
-    WHERE user_id = "another_id")
+    WHERE user_id = "another_id") 
     
