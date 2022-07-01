@@ -16,7 +16,7 @@ public class User {
     private int id;
     private final String email;
     private final String login;
-    private final Friendship friendship;
+    //private final Friendship friendship;
     @Setter
     @EqualsAndHashCode.Exclude
     private String name;
