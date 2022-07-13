@@ -3,27 +3,45 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import ru.yandex.practicum.filmorate.model.enums.Genre;
-import ru.yandex.practicum.filmorate.model.enums.Rating_MPA;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Data
 public class Film {
     @Setter
     @EqualsAndHashCode.Exclude
-    private int id;
-    private final String name;
-    private final String description;
-    private final LocalDate releaseDate;
-    private final int duration;
-    private final Genre genre;
-    private final Rating_MPA rating_mpa;
-
+    private Integer id;
+    private String name;
+    private String description;
+    private LocalDate releaseDate;
+    private Integer duration;
     @EqualsAndHashCode.Exclude
-    private Set<Integer> likes = new TreeSet<>();
+    private Collection<Genre> genres = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    private MPA mpa;
+    @EqualsAndHashCode.Exclude
+    private Integer rate;
+    @EqualsAndHashCode.Exclude
+    private Collection<Integer> likes = new ArrayList<>();
+
+    public Film() {
+        super();
+    }
+
+    public Film(Integer id, String name, String description, Date releaseDate, Integer duration,
+                Collection<Genre> genres, MPA mpa, Integer rate, Collection<Integer> likes) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate.toLocalDate();
+        this.duration = duration;
+        this.genres = genres;
+        this.mpa = mpa;
+        this.rate = rate;
+        this.likes = likes;
+    }
 
     public void addLike(Integer userId) {
         likes.add(userId);

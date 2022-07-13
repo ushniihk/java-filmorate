@@ -14,17 +14,22 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserStorage userStorage;
 
-    public void addFriend(Integer id, Integer friendId) throws NotFoundParameterException {
-        userStorage.getUser(id).addFriend(userStorage.getUser(friendId).getId());
-        userStorage.getUser(friendId).addFriend(userStorage.getUser(id).getId());
+    public void addFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (checkID(friendId))
+            throw new NotFoundParameterException("bad id");
+        userStorage.addFriend(id, friendId);
     }
 
-    public void deleteFriend(Integer id, Integer friendId) throws NotFoundParameterException {
-        userStorage.getUser(id).removeFriend(userStorage.getUser(friendId).getId());
-        userStorage.getUser(friendId).removeFriend(userStorage.getUser(id).getId());
+    public void deleteFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (checkID(friendId))
+            throw new NotFoundParameterException("bad id");
+        userStorage.deleteFriend(id, friendId);
     }
 
     public Collection<User> findAll() {
@@ -40,16 +45,27 @@ public class UserService {
     }
 
     public User getUser(Integer id) throws NotFoundParameterException {
-        return userStorage.getUser(id);
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        return userStorage.getUser(id).get();
     }
 
-    public Collection<User> showAllFriends(Integer id) {
+    public Collection<User> showAllFriends(Integer id) throws NotFoundParameterException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
         return userStorage.showAllFriends(id);
     }
 
-    public Collection<User> showCommonFriends(Integer id, Integer otherId) {
+    public Collection<User> showCommonFriends(Integer id, Integer otherId) throws NotFoundParameterException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (checkID(otherId))
+            throw new NotFoundParameterException("bad id");
         return userStorage.showCommonFriends(id, otherId);
     }
 
+    private boolean checkID(Integer id) {
+        return (id == null || id < 0);
+    }
 
 }

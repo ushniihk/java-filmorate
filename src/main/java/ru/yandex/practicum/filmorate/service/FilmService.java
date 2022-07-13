@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,11 +21,27 @@ public class FilmService {
     private final UserStorage userStorage;
 
     public void addLike(Integer id, Integer userId) throws NotFoundParameterException {
-        filmStorage.getFilm(id).addLike(userStorage.getUser(userId).getId());
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (checkID(userId))
+            throw new NotFoundParameterException("bad id");
+
+        if (filmStorage.getFilm(id).isPresent() && userStorage.getUser(userId).isPresent()) {
+            filmStorage.getFilm(id).get().addLike(userStorage.getUser(userId).get().getId());
+            filmStorage.createLike(id, userId);
+        }
+
     }
 
     public void deleteLike(Integer id, Integer userId) throws NotFoundParameterException {
-        filmStorage.getFilm(id).deleteLike(userStorage.getUser(userId).getId());
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (checkID(userId))
+            throw new NotFoundParameterException("bad id");
+        if (filmStorage.getFilm(id).isPresent() && userStorage.getUser(userId).isPresent()) {
+            filmStorage.getFilm(id).get().deleteLike(userStorage.getUser(userId).get().getId());
+            filmStorage.removeLike(id, userId);
+        }
     }
 
     public Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
@@ -46,8 +63,14 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public Film getFilm(Integer id) throws NotFoundParameterException {
+    public Optional<Film> getFilm(Integer id) throws NotFoundParameterException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
         return filmStorage.getFilm(id);
+    }
+
+    private boolean checkID(Integer id) {
+        return (id == null || id < 0);
     }
 
 }

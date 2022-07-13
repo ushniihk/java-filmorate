@@ -35,7 +35,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film findFilm(@PathVariable Integer id) throws NotFoundParameterException {
-        return filmService.getFilm(id);
+        return filmService.getFilm(id).get();
     }
 
     @PutMapping("/{id}/like/{userId}")

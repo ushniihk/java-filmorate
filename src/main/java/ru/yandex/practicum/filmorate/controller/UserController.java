@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,6 +14,7 @@ import java.util.*;
 @Slf4j
 @Data
 @RequestMapping("/users")
+@Component
 public class UserController {
     private final UserService userService;
 
@@ -37,22 +39,23 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException, UpdateException {
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException {
+    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) throws NotFoundParameterException, UpdateException {
         userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> getFriends(@PathVariable Integer id) {
+    public Collection<User> getFriends(@PathVariable Integer id) throws NotFoundParameterException {
         return userService.showAllFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> showCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    public Collection<User> showCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) throws NotFoundParameterException {
         return userService.showCommonFriends(id, otherId);
     }
+
 }

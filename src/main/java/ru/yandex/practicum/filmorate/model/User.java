@@ -3,32 +3,38 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import ru.yandex.practicum.filmorate.model.enums.Friendship;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+
 
 @Data
 public class User {
+
     @Setter
     @EqualsAndHashCode.Exclude
     private int id;
-    private final String email;
-    private final String login;
-    //private final Friendship friendship;
+    private String email;
+    private String login;
     @Setter
     @EqualsAndHashCode.Exclude
     private String name;
-    private final LocalDate birthday;
+    private LocalDate birthday;
     @EqualsAndHashCode.Exclude
-    private Set<Integer> friends = new TreeSet<>();
+    private Collection<Integer> friends = new ArrayList<>();
 
-    public void addFriend(Integer userId) {
-        friends.add(userId);
+    public User() {
+        super();
     }
 
-    public void removeFriend(Integer userId) {
-        friends.remove(userId);
+    public User(int id, String email, String login, Collection<Integer> friends, String name, Date birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.friends = friends;
+        this.name = name;
+        this.birthday = birthday.toLocalDate();
     }
+
 }

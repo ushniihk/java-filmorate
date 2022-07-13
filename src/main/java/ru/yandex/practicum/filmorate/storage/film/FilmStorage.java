@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface FilmStorage {
     Collection<Film> findAll();
@@ -13,5 +14,9 @@ public interface FilmStorage {
 
     Film update(Film film) throws NotFoundParameterException;
 
-    Film getFilm(Integer id) throws NotFoundParameterException;
+    Optional<Film> getFilm(Integer id) throws NotFoundParameterException;
+
+    void createLike(Integer filmID, Integer userID);
+
+    void removeLike(Integer filmID, Integer userID);
 }
