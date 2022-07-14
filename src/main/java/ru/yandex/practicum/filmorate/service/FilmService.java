@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -26,11 +27,13 @@ public class FilmService {
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
 
-        if (filmStorage.getFilm(id).isPresent() && userStorage.getUser(userId).isPresent()) {
-            filmStorage.getFilm(id).get().addLike(userStorage.getUser(userId).get().getId());
+        Optional<Film> film = filmStorage.getFilm(id);
+        Optional<User> user = userStorage.getUser(userId);
+
+        if (film.isPresent() && user.isPresent()) {
+            film.get().addLike(user.get().getId());
             filmStorage.createLike(id, userId);
         }
-
     }
 
     public void deleteLike(Integer id, Integer userId) throws NotFoundParameterException {
@@ -38,8 +41,12 @@ public class FilmService {
             throw new NotFoundParameterException("bad id");
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
-        if (filmStorage.getFilm(id).isPresent() && userStorage.getUser(userId).isPresent()) {
-            filmStorage.getFilm(id).get().deleteLike(userStorage.getUser(userId).get().getId());
+
+        Optional<Film> film = filmStorage.getFilm(id);
+        Optional<User> user = userStorage.getUser(userId);
+
+        if (film.isPresent() && user.isPresent()) {
+            film.get().deleteLike(user.get().getId());
             filmStorage.removeLike(id, userId);
         }
     }
