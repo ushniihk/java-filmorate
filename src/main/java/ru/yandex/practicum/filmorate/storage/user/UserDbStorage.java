@@ -31,13 +31,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> findAll() {
         String sql = "SELECT * FROM USERS";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            try {
-                return makeUser(rs);
-            } catch (NotFoundParameterException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs));
     }
 
     @Override
@@ -104,9 +98,7 @@ public class UserDbStorage implements UserStorage {
                     userRows.getString("name"),
                     userRows.getDate("birthday")
             );
-
             log.info("Найден пользователь: {} {}", user.getId(), user.getName());
-
             return Optional.of(user);
         } else {
             log.info("Пользователь с идентификатором {} не найден.", id);
@@ -116,7 +108,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> showAllFriends(Integer id) throws NotFoundParameterException {
-
         Collection<User> users = new ArrayList<>();
         if (getUser(id).isPresent()) {
             for (Integer user_id : getUser(id).get().getFriends()) {
@@ -129,36 +120,24 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> showCommonFriends(Integer id, Integer otherId) throws NotFoundParameterException {
-        Set<User> commonFriends = new TreeSet<>((o1, o2) -> o1.getId() - o1.getId());
-        ;
-        getFriendsByUser(id).stream().filter(getFriendsByUser(otherId)::contains)
-                .forEach(i -> {
-                    try {
-                        commonFriends.add(getUser(i).get());
-                    } catch (NotFoundParameterException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        return commonFriends;
+        String sql = "SELECT * FROM users WHERE user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) " +
+                "AND user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) ORDER BY USER_ID;";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs), id, otherId);
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
-
         String sqlQuery2 = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID, FRIENDSHIP) VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery2, id, friendId, 1);
-
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
-
         String sqlQuery2 = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sqlQuery2, id, friendId);
     }
 
     private Collection<Integer> getFriendsByUser(Integer id) {
-
         String sql = "SELECT friend_id FROM FRIENDS WHERE USER_ID = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFriends(rs), id);
     }
@@ -167,7 +146,7 @@ public class UserDbStorage implements UserStorage {
         return rs.getInt("friend_id");
     }
 
-    private User makeUser(ResultSet rs) throws SQLException, NotFoundParameterException {
+    private User makeUser(ResultSet rs) throws SQLException {
         return new User(
                 rs.getInt("USER_ID"),
                 rs.getString("email"),
