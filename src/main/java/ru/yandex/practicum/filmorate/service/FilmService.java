@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Data
+@RequiredArgsConstructor
 public class FilmService {
 
     private final FilmStorage filmStorage;

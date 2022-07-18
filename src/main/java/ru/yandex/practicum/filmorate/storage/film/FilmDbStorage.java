@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -20,24 +21,18 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Repository
 @Slf4j
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final MPAStorage mpaStorage;
     private final GenreStorage genreStorage;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MPAStorage mpaStorage, GenreStorage genreStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaStorage = mpaStorage;
-        this.genreStorage = genreStorage;
-    }
-
-
     @Override
     public Collection<Film> findAll() {
-        String sql = "SELECT * FROM FILM";
+        String sql = "SELECT * FROM FILMS";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs));
     }
 
@@ -50,7 +45,7 @@ public class FilmDbStorage implements FilmStorage {
             log.debug("Oh, no. validation failed");
             throw new ValidationException("oh, something was wrong");
         } else {
-            String sqlQuery = "INSERT INTO FILM (NAME, DESCRIPTION, RELEASEDATE, DURATION, RATING_MPA_ID, RATE)" +
+            String sqlQuery = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASEDATE, DURATION, RATING_MPA_ID, RATE)" +
                     " VALUES (?, ?, ?, ?, ?, ?)";
 
             jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()),
@@ -76,7 +71,7 @@ public class FilmDbStorage implements FilmStorage {
             log.debug("Oh, no. validation failed");
             throw new NotFoundParameterException("oh, something was wrong");
         } else {
-            String sqlQuery = "UPDATE FILM SET name = ?, description = ?, releaseDate = ?, DURATION = ?, " +
+            String sqlQuery = "UPDATE FILMS SET name = ?, description = ?, releaseDate = ?, DURATION = ?, " +
                     " rating_mpa_ID = ?, RATE = ? WHERE FILM_ID = ?";
 
             jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), Date.valueOf(film.getReleaseDate()),
@@ -101,7 +96,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Optional<Film> getFilm(Integer id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM WHERE FILM_ID = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE FILM_ID = ?", id);
 
         if (userRows.next()) {
             Film film = new Film(

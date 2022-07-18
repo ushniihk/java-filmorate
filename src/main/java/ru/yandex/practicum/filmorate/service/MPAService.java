@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.model.MPA;
@@ -8,13 +9,10 @@ import ru.yandex.practicum.filmorate.storage.MPA.MPAStorage;
 import java.util.Collection;
 
 @Service
+@RequiredArgsConstructor
 public class MPAService {
 
     private final MPAStorage mpaStorage;
-
-    public MPAService(MPAStorage mpaStorage) {
-        this.mpaStorage = mpaStorage;
-    }
 
     public Collection<MPA> findAll() {
         return mpaStorage.findAll();

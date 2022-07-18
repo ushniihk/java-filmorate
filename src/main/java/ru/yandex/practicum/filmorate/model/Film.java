@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -10,7 +9,6 @@ import java.util.*;
 
 @Data
 public class Film {
-    @Setter
     @EqualsAndHashCode.Exclude
     private Integer id;
     private String name;

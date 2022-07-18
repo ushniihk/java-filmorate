@@ -12,7 +12,6 @@ import java.util.*;
 @Data
 public class User {
 
-    @Setter
     @EqualsAndHashCode.Exclude
     private int id;
     private String email;

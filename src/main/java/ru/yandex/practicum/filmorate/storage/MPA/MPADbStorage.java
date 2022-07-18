@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.MPA;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -11,15 +11,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 @Repository
+@RequiredArgsConstructor
 public class MPADbStorage implements MPAStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public MPADbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
 
     @Override
     public Collection<MPA> findAll() {
@@ -42,9 +37,8 @@ public class MPADbStorage implements MPAStorage {
 
     @Override
     public void createMPA(MPA mpa, Integer film_id) {
-        String sqlQuery = "UPDATE FILM SET rating_mpa_ID = ? WHERE FILM_ID = ?";
+        String sqlQuery = "UPDATE FILMS SET rating_mpa_ID = ? WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, mpa.getId(), film_id);
     }
-
 
 }

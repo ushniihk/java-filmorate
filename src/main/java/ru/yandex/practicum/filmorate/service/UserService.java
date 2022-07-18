@@ -14,6 +14,7 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserStorage userStorage;
 
     public void addFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException {

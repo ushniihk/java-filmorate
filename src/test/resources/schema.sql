@@ -1,6 +1,6 @@
 Drop table IF EXISTS FILM_GENRE;
 Drop table IF EXISTS FILM_LIKES;
-Drop table IF EXISTS FILM;
+Drop table IF EXISTS FILMS;
 Drop table IF EXISTS RATING_MPA;
 Drop table IF EXISTS FRIENDS;
 Drop table IF EXISTS FRIENDSHIP;
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS rating_mpa
     name varchar(5)
 );
 
-CREATE TABLE IF NOT EXISTS film
+CREATE TABLE IF NOT EXISTS films
 (
     film_id       INTEGER,
     name          varchar(50),

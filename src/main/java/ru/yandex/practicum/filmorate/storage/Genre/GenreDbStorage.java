@@ -1,24 +1,22 @@
 package ru.yandex.practicum.filmorate.storage.Genre;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-@Component
+@Repository
+@RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
-    JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Collection<Genre> findAll() {
