@@ -14,6 +14,8 @@ public interface FilmStorage {
 
     Film update(Film film) throws NotFoundParameterException;
 
+    boolean removeFilm(int filmId);
+
     Optional<Film> getFilm(Integer id) throws NotFoundParameterException;
 
     void createLike(Integer filmID, Integer userID);

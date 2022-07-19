@@ -45,6 +45,13 @@ public class UserService {
         return userStorage.update(user);
     }
 
+    public void deleteUser(int userId) throws NotFoundParameterException {
+        if (checkID(userId)) {
+            throw new NotFoundParameterException("bad id");
+        }
+        userStorage.deleteUser(userId);
+    }
+
     public User getUser(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");

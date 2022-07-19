@@ -78,6 +78,13 @@ public class FilmService {
         return filmStorage.getFilm(id);
     }
 
+    public void removeFilm(int filmId) throws NotFoundParameterException{
+        if (checkID(filmId)) {
+            throw new NotFoundParameterException("bad id");
+        }
+        filmStorage.removeFilm(filmId);
+    }
+
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
     }

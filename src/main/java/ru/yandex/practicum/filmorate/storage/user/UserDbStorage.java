@@ -58,6 +58,13 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public boolean deleteUser(int userId) {
+        String sqlQuery = "DELETE FROM users WHERE user_id = ?";
+        int rowsAffected = jdbcTemplate.update(sqlQuery, userId);
+        return rowsAffected != 0;
+    }
+
+    @Override
     public User update(User user) throws UpdateException {
         if ((!StringUtils.hasText(user.getEmail())) || (!user.getEmail().contains("@"))
                 || (!StringUtils.hasText(user.getLogin())) || user.getLogin().contains(" ")

@@ -170,4 +170,9 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(f.getId());
         }
     }
+    @Override
+    public boolean removeFilm(int filmId) {
+        int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
+        return affectedRows != 0;
+    }
 }

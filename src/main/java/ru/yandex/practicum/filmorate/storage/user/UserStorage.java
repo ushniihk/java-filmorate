@@ -15,6 +15,8 @@ public interface UserStorage {
 
     User update(User user) throws UpdateException;
 
+    boolean deleteUser(int userId);
+
     Optional<User> getUser(Integer id) throws NotFoundParameterException;
 
     Collection<User> showAllFriends(Integer id) throws NotFoundParameterException;
