@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -54,9 +55,13 @@ public class FilmController {
             throw new IncorrectParameterException("count");
         return filmService.getTopFilmsByLikes(filmService.findAll(), count);
     }
-
     @DeleteMapping("/{id}")
     public void removeFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
         filmService.removeFilm(filmId);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam List<String> sortBy) throws NotFoundParameterException {
+        return filmService.findFilmsByDirector(directorId, sortBy);
     }
 }
