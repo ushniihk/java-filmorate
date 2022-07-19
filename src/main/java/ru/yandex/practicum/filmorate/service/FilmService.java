@@ -97,6 +97,5 @@ public class FilmService {
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
     }
-
 }
 
