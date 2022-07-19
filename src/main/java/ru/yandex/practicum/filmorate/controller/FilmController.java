@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -61,7 +60,7 @@ public class FilmController {
     }
 
     @GetMapping("/director/{directorId}")
-    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam List<String> sortBy) throws NotFoundParameterException {
+    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
         return filmService.findFilmsByDirector(directorId, sortBy);
     }
 }

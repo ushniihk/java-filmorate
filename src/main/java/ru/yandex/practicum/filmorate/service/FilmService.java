@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -89,7 +88,7 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> findFilmsByDirector(Integer directorID, List<String> sortBy) throws NotFoundParameterException {
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
         if (checkID(directorID))
             throw new NotFoundParameterException("bad id");
         return filmStorage.findFilmsByDirector(directorID, sortBy);

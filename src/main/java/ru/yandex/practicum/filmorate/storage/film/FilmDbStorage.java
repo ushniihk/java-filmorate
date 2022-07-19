@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -149,15 +148,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findFilmsByDirector(Integer directorID, List<String> sortBy) {
-        String sort1 = "f.RELEASEDATE";
-        String sort2 = "COUNT(FL.USER_ID)";
-        if (sortBy.get(0).equals("likes")) {
-            sort1 = "COUNT(FL.USER_ID)";
-            sort2 = "f.RELEASEDATE";
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) {
+        String sort = "f.RELEASEDATE";
+        if (sortBy.equals("likes")) {
+            sort = "COUNT(FL.USER_ID)";
         }
         String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
-                "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort1 + ", " + sort2;
+                "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort;
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
     }
 
