@@ -82,7 +82,10 @@ public class FilmService {
         if (checkID(filmId)) {
             throw new NotFoundParameterException("bad id");
         }
-        filmStorage.removeFilm(filmId);
+        boolean deleted = filmStorage.removeFilm(filmId);
+        if (!deleted) {
+            throw new NotFoundParameterException("No Film With Such Id");
+        }
     }
 
     private boolean checkID(Integer id) {
