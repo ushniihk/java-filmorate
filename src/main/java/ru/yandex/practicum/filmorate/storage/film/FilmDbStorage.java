@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -169,5 +170,18 @@ public class FilmDbStorage implements FilmStorage {
             if (f.equals(film))
                 film.setId(f.getId());
         }
+    }
+
+    @Override
+    public Collection<Film> searchByTitle(String str) {
+        final String subStringForSearch = "SELECT * FROM FILMS LEFT OUTER JOIN (SELECT FILM_ID, COUNT (*) LIKES FROM FILM_LIKES GROUP BY FILM_ID) AS l " +
+            "ON FILMS.FILM_ID = l.FILM_ID LEFT OUTER JOIN RATING_MPA ON FILMS.RATING_MPA_ID = RATING_MPA.RATING_MPA_ID " +
+            "WHERE FILMS.name ILIKE CONCAT('%', ? ,'%')" + //--WHERE  "name" LIKE ('%' || '?' || '%')::bytea  --!
+            "ORDER BY l.LIKES DESC;";
+
+        return jdbcTemplate.query(subStringForSearch, (rs, rowNum) -> {
+         //   final Long filmId = rs.getLong("film_id");
+            return makeFilm(rs);
+        }, str);
     }
 }

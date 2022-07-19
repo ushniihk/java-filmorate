@@ -19,4 +19,6 @@ public interface FilmStorage {
     void createLike(Integer filmID, Integer userID);
 
     void removeLike(Integer filmID, Integer userID);
+
+    Collection<Film> searchByTitle (String str);
 }

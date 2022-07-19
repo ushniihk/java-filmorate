@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -82,4 +83,7 @@ public class FilmService {
         return (id == null || id < 0);
     }
 
+    public Collection<Film> search(String str, String type) {
+        return filmStorage.searchByTitle(str);
+    }
 }

@@ -54,4 +54,9 @@ public class FilmController {
             throw new IncorrectParameterException("count");
         return filmService.getTopFilmsByLikes(filmService.findAll(), count);
     }
+
+    @GetMapping("/search?query={str}&by{type}")
+    public Collection<Film> search(@PathVariable String str, @PathVariable String type) {
+        return filmService.search(str, type);
+    }
 }
