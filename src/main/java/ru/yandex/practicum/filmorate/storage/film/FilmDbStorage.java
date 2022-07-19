@@ -8,16 +8,19 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.Genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MPA.MPAStorage;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,6 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MPAStorage mpaStorage;
     private final GenreStorage genreStorage;
+    private final DirectorStorage directorStorage;
 
     @Override
     public Collection<Film> findAll() {
@@ -52,6 +56,10 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(), film.getMpa().getId(), film.getRate());
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
+
+            for (Director d: film.getDirector()) {
+                directorStorage.addDirector(d.getId(), film.getId());
+            }
 
             for (Genre g : set) {
                 genreStorage.createGenre(g.getId(), film.getId());
@@ -81,11 +89,18 @@ public class FilmDbStorage implements FilmStorage {
 
             genreStorage.removeGenre(film.getId());
 
+            directorStorage.removeDirector(film.getId());
+
+            for (Director d: film.getDirector()) {
+                directorStorage.addDirector(d.getId(), film.getId());
+            }
+
             Set<Genre> set = Set.copyOf(film.getGenres());
 
             for (Genre g : set) {
                 genreStorage.createGenre(g.getId(), film.getId());
             }
+
 
             mpaStorage.createMPA(film.getMpa(), film.getId());
 
@@ -108,7 +123,8 @@ public class FilmDbStorage implements FilmStorage {
                     getGenre(id),
                     mpaStorage.getMPA(userRows.getInt("RATING_MPA_ID")),
                     userRows.getInt("rate"),
-                    getLikes(id)
+                    getLikes(id),
+                    directorStorage.getDirectors(id)
             );
 
             log.info("Найден пользователь: {} {}", film.getId(), film.getName());
@@ -132,7 +148,20 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update(sqlQuery, filmID, userID);
     }
 
-    private Film makeFilm(ResultSet rs) throws SQLException {
+    @Override
+    public Collection<Film> findFilmsByDirector(Integer directorID, List<String> sortBy) {
+        String sort1 = "f.RELEASEDATE";
+        String sort2 = "COUNT(FL.USER_ID)";
+        if (sortBy.get(0).equals("likes")) {
+            sort1 = "COUNT(FL.USER_ID)";
+            sort2 = "f.RELEASEDATE";
+        }
+        String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
+                "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort1 + ", " + sort2;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
+    }
+
+    public Film makeFilm(ResultSet rs) throws SQLException {
         return new Film(
                 rs.getInt("FILM_ID"),
                 rs.getString("name"),
@@ -142,7 +171,8 @@ public class FilmDbStorage implements FilmStorage {
                 getGenre(rs.getInt("FILM_ID")),
                 mpaStorage.getMPA(rs.getInt("rating_MPA_id")),
                 rs.getInt("rate"),
-                getLikes(rs.getInt("FILM_ID"))
+                getLikes(rs.getInt("FILM_ID")),
+                directorStorage.getDirectors(rs.getInt("FILM_ID"))
         );
     }
 
@@ -170,4 +200,5 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(f.getId());
         }
     }
+
 }
