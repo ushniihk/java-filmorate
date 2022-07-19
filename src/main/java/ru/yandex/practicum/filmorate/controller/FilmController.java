@@ -54,13 +54,14 @@ public class FilmController {
             throw new IncorrectParameterException("count");
         return filmService.getTopFilmsByLikes(filmService.findAll(), count);
     }
-    @DeleteMapping("/{id}")
-    public void removeFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
-        filmService.removeFilm(filmId);
-    }
 
     @GetMapping("/director/{directorId}")
     public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
         return filmService.findFilmsByDirector(directorId, sortBy);
+    }
+
+    @DeleteMapping("/{id}")
+    public void removeFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
+        filmService.removeFilm(filmId);
     }
 }

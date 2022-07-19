@@ -17639,6 +17639,7 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2022-07-19 15:56:14 database: wrong user or password; user: "SA"
 org.h2.message.DbException: Неверное имя пользователя или пароль
 Wrong user name or password [28000-210]
@@ -17787,6 +17788,156 @@ Wrong user name or password [28000-210]
 =======
 2022-07-19 15:58:58 jdbc[3]: exception
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
+=======
+2022-07-19 15:58:58 jdbc[3]: exception
+=======
+2022-07-19 15:56:14 database: wrong user or password; user: "SA"
+org.h2.message.DbException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.get(DbException.java:227)
+	at org.h2.message.DbException.get(DbException.java:203)
+	at org.h2.message.DbException.get(DbException.java:192)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.intellij.database.remote.jdbc.helpers.JdbcHelperImpl.connect(JdbcHelperImpl.java:639)
+	at com.intellij.database.remote.jdbc.impl.RemoteDriverImpl.connect(RemoteDriverImpl.java:55)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:359)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:562)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:796)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:677)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:676)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:529)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+	... 28 more
+2022-07-19 15:56:21 database: wrong user or password; user: "SA"
+org.h2.message.DbException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.get(DbException.java:227)
+	at org.h2.message.DbException.get(DbException.java:203)
+	at org.h2.message.DbException.get(DbException.java:192)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.intellij.database.remote.jdbc.helpers.JdbcHelperImpl.connect(JdbcHelperImpl.java:639)
+	at com.intellij.database.remote.jdbc.impl.RemoteDriverImpl.connect(RemoteDriverImpl.java:55)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:359)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:562)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:796)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:677)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:676)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:529)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+	... 28 more
+2022-07-19 15:57:10 database: wrong user or password; user: "SA"
+org.h2.message.DbException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.get(DbException.java:227)
+	at org.h2.message.DbException.get(DbException.java:203)
+	at org.h2.message.DbException.get(DbException.java:192)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.intellij.database.remote.jdbc.helpers.JdbcHelperImpl.connect(JdbcHelperImpl.java:639)
+	at com.intellij.database.remote.jdbc.impl.RemoteDriverImpl.connect(RemoteDriverImpl.java:55)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:359)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:562)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:796)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:677)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:676)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:529)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+	... 28 more
+2022-07-19 15:57:16 database: wrong user or password; user: "SA"
+org.h2.message.DbException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.get(DbException.java:227)
+	at org.h2.message.DbException.get(DbException.java:203)
+	at org.h2.message.DbException.get(DbException.java:192)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.intellij.database.remote.jdbc.helpers.JdbcHelperImpl.connect(JdbcHelperImpl.java:639)
+	at com.intellij.database.remote.jdbc.impl.RemoteDriverImpl.connect(RemoteDriverImpl.java:55)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:359)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:562)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:796)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:677)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:676)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-210]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:529)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+	... 28 more
+2022-07-19 15:57:23 jdbc[3]: exception
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1573)
 	at com.intellij.database.remote.jdbc.impl.RemoteConnectionImpl.setClientInfo(RemoteConnectionImpl.java:470)
@@ -17807,11 +17958,18 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+<<<<<<< HEAD
 <<<<<<< HEAD
 2022-07-19 15:57:28 jdbc[3]: exception
 =======
 2022-07-19 15:58:59 jdbc[4]: exception
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
+=======
+2022-07-19 15:58:59 jdbc[4]: exception
+=======
+2022-07-19 15:57:28 jdbc[3]: exception
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1573)
 	at com.intellij.database.remote.jdbc.impl.RemoteConnectionImpl.setClientInfo(RemoteConnectionImpl.java:470)
@@ -17832,11 +17990,18 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+<<<<<<< HEAD
 <<<<<<< HEAD
 2022-07-19 15:57:37 jdbc[3]: exception
 =======
 2022-07-19 15:59:16 jdbc[5]: exception
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
+=======
+2022-07-19 15:59:16 jdbc[5]: exception
+=======
+2022-07-19 15:57:37 jdbc[3]: exception
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1573)
 	at com.intellij.database.remote.jdbc.impl.RemoteConnectionImpl.setClientInfo(RemoteConnectionImpl.java:470)
@@ -17858,10 +18023,13 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2022-07-19 19:01:32 database: flush
 org.h2.message.DbException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
 General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
 =======
+=======
+>>>>>>> 8de7d27 (merge commit #1)
 2022-07-19 19:14:20 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Невозможно удалить "FILMS", пока существует зависимый объект "CONSTRAINT_73B"
 Cannot drop "FILMS" because "CONSTRAINT_73B" depends on it; SQL statement:
@@ -17978,7 +18146,15 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 2022-07-19 22:31:46 database: flush
 org.h2.message.DbException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
 General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
+<<<<<<< HEAD
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
+=======
+=======
+2022-07-19 19:01:32 database: flush
+org.h2.message.DbException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
+General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)
 	at org.h2.message.DbException.get(DbException.java:212)
 	at org.h2.message.DbException.convert(DbException.java:395)
 	at org.h2.mvstore.db.Store.lambda$new$0(Store.java:124)
@@ -18032,6 +18208,7 @@ General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/us
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295)
 	at ru.yandex.practicum.filmorate.FilmorateApplication.main(FilmorateApplication.java:10)
 <<<<<<< HEAD
+<<<<<<< HEAD
 Caused by: org.h2.jdbc.JdbcSQLNonTransientException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
 General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:554)
@@ -18039,17 +18216,31 @@ General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/to
 	... 52 more
 Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]
 =======
+=======
+>>>>>>> 8de7d27 (merge commit #1)
 Caused by: org.h2.jdbc.JdbcSQLNonTransientException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
 General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:554)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
 	... 52 more
 Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]
+<<<<<<< HEAD
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
+=======
+=======
+Caused by: org.h2.jdbc.JdbcSQLNonTransientException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
+General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:554)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	... 52 more
+Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/tonyc/Desktop/common/java-filmorate/db/filmorate.mv.db [2.1.212/7]
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)
 	at org.h2.mvstore.DataUtils.newMVStoreException(DataUtils.java:1004)
 	at org.h2.mvstore.FileStore.open(FileStore.java:163)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:449)
 	... 46 more
+<<<<<<< HEAD
 <<<<<<< HEAD
 2022-07-19 16:01:52 jdbc[4]: exception
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
@@ -18357,6 +18548,8 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
 =======
+=======
+>>>>>>> 8de7d27 (merge commit #1)
 2022-07-19 23:09:21 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLDataException: Ошибка преобразования данных при конвертации "New director22"
 Data conversion error converting "New director22"; SQL statement:
@@ -18365,6 +18558,9 @@ UPDATE DIRECTORS SET DIRECTOR_NAME = ? WHERE DIRECTOR_ID = ? [22018-212]
 >>>>>>> dc1a8ba (feature: add entity Director, DirectorController, DirectorService, DirectorStorage)
 =======
 2022-07-19 21:52:01 jdbc[3]: exception
+=======
+2022-07-19 16:01:52 jdbc[4]: exception
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1573)
 	at com.intellij.database.remote.jdbc.impl.RemoteConnectionImpl.setClientInfo(RemoteConnectionImpl.java:470)
@@ -18385,6 +18581,7 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+<<<<<<< HEAD
 2022-07-19 23:41:36 jdbc[3]: exception
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1573)
@@ -18487,6 +18684,15 @@ General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/us
 	at org.h2.mvstore.db.Store.<init>(Store.java:133)
 	at org.h2.engine.Database.<init>(Database.java:324)
 	at org.h2.engine.Engine.openSession(Engine.java:92)
+=======
+2022-07-19 19:02:13 database: wrong user or password; user: "SA"
+org.h2.message.DbException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-212]
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.get(DbException.java:188)
+	at org.h2.engine.Engine.openSession(Engine.java:154)
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
 	at org.h2.engine.Engine.openSession(Engine.java:222)
 	at org.h2.engine.Engine.createSession(Engine.java:201)
 	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
@@ -18529,6 +18735,7 @@ General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/us
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295)
 	at ru.yandex.practicum.filmorate.FilmorateApplication.main(FilmorateApplication.java:10)
+<<<<<<< HEAD
 Caused by: org.h2.jdbc.JdbcSQLNonTransientException: Внутренняя ошибка: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]"
 General error: "org.h2.mvstore.MVStoreException: The file is locked: C:/Users/user/IdeaProjects/java-filmorate/db/filmorate.mv.db [2.1.212/7]" [50000-212]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:554)
@@ -18628,4 +18835,14 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:829)
+<<<<<<< HEAD
 >>>>>>> af4e155 (fix: fix all bugs after POSTMAN)
+=======
+=======
+Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Неверное имя пользователя или пароль
+Wrong user name or password [28000-212]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:510)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
+	... 46 more
+>>>>>>> 36bc988 (feat: добавить удаление пользователей и фильмов)
+>>>>>>> 8de7d27 (merge commit #1)

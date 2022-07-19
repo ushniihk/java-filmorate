@@ -55,9 +55,8 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(), film.getMpa().getId(), film.getRate());
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
-            
-            for (Director d: film.getDirectors()) {
 
+            for (Director d : film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -91,8 +90,8 @@ public class FilmDbStorage implements FilmStorage {
 
             directorStorage.removeDirector(film.getId());
 
-            for (Director d: film.getDirectors()) {
 
+            for (Director d : film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -153,7 +152,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws
+            NotFoundParameterException {
         Director director = new Director(directorID, "TEST");
         if (!directorStorage.findAll().contains(director)) {
             throw new NotFoundParameterException("BAD directorID");
@@ -206,9 +206,12 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(f.getId());
         }
     }
+
     @Override
     public boolean removeFilm(int filmId) {
         int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
         return affectedRows != 0;
     }
 }
+
+

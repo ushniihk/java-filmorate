@@ -53,6 +53,7 @@ public class UserService {
         if (!deleted) {
             throw new NotFoundParameterException("No User With Such Id");
         }
+        userStorage.deleteUser(userId);
     }
 
     public User getUser(Integer id) throws NotFoundParameterException {
