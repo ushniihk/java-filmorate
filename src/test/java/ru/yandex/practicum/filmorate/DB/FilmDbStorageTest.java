@@ -40,11 +40,11 @@ public class FilmDbStorageTest {
     @Test
     public void shouldCreateAndUpdateFilm() throws ValidationException, NotFoundParameterException {
         Film film1 = new Film(1, "JavaFilm", "about Java", Date.valueOf("1895-12-28"),
-                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>());
+                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>(), new ArrayList<>());
         filmStorage.create(film1);
         assertEquals(filmStorage.findAll().size(), 4);
         Film film2 = new Film(1, "Test Film", "about Test", Date.valueOf("1895-12-28"),
-                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>());
+                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>(), new ArrayList<>());
         filmStorage.update(film2);
         assertEquals(filmStorage.findAll().size(), 4);
     }

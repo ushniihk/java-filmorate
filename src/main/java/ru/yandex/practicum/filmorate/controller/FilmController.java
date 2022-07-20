@@ -55,6 +55,11 @@ public class FilmController {
         return filmService.getTopFilmsByLikes(filmService.findAll(), count);
     }
 
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
+        return filmService.findFilmsByDirector(directorId, sortBy);
+    }
+
     @GetMapping("/search?query={str}&by{type}")
     public Collection<Film> search(@PathVariable String str, @PathVariable String type) {
         return filmService.search(str, type);
