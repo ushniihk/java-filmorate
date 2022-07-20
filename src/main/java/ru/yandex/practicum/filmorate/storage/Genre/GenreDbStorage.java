@@ -43,6 +43,12 @@ public class GenreDbStorage implements GenreStorage {
         jdbcTemplate.update(sqlQuery, filmID);
     }
 
+    @Override
+    public Collection<Genre> findGenresByFilm(Integer filmID) {
+        String sql = "SELECT * FROM FILM_GENRE join GENRE G2 on G2.GENRE_ID = FILM_GENRE.GENRE_ID WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs), filmID);    }
+
+
     private Genre makeGenre(ResultSet rs) throws SQLException {
         return new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));
     }

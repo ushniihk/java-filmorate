@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
@@ -34,7 +35,7 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director getDirector(@PathVariable Integer id) {
+    public Director getDirector(@PathVariable Integer id) throws NotFoundParameterException {
         return directorService.getDirector(id);
     }
 

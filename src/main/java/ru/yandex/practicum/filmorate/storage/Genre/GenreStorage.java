@@ -13,4 +13,6 @@ public interface GenreStorage {
 
     void removeGenre(Integer genreID);
 
+    Collection<Genre>findGenresByFilm(Integer filmID);
+
 }

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.director;
 
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.model.Director;
 
 
@@ -11,7 +12,7 @@ public interface DirectorStorage {
 
     Collection<Director> findAll();
 
-    Director getDirector(Integer id);
+    Director getDirector(Integer id) throws NotFoundParameterException;
 
     void addDirector(Integer ID, Integer filmID);
 
