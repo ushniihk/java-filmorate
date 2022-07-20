@@ -166,7 +166,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
     }
 
-    public Film makeFilm(ResultSet rs) throws SQLException {
     @Override
     public List<Film> getCommonFilms(Integer userId, Integer friendId) {
         String sql = "select *\n" +
@@ -178,7 +177,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 
-    private Film makeFilm(ResultSet rs) throws SQLException {
+    public Film makeFilm(ResultSet rs) throws SQLException {
         return new Film(
                 rs.getInt("FILM_ID"),
                 rs.getString("name"),
