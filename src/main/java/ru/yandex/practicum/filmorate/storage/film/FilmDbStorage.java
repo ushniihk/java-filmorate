@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.Genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MPA.MPAStorage;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -30,6 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MPAStorage mpaStorage;
     private final GenreStorage genreStorage;
+    private final DirectorStorage directorStorage;
 
     @Override
     public Collection<Film> findAll() {
@@ -53,6 +56,10 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(), film.getMpa().getId(), film.getRate());
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
+
+            for (Director d: film.getDirectors()) {
+                directorStorage.addDirector(d.getId(), film.getId());
+            }
 
             for (Genre g : set) {
                 genreStorage.createGenre(g.getId(), film.getId());
@@ -82,17 +89,27 @@ public class FilmDbStorage implements FilmStorage {
 
             genreStorage.removeGenre(film.getId());
 
+            directorStorage.removeDirector(film.getId());
+
+            for (Director d: film.getDirectors()) {
+                directorStorage.addDirector(d.getId(), film.getId());
+            }
+
+            film.setNullDirectors(directorStorage.getDirectors(film.getId()));
+
             Set<Genre> set = Set.copyOf(film.getGenres());
 
             for (Genre g : set) {
                 genreStorage.createGenre(g.getId(), film.getId());
             }
 
+            film.setGenres(genreStorage.findGenresByFilm(film.getId()));
+
             mpaStorage.createMPA(film.getMpa(), film.getId());
 
         }
         log.debug("updated: {}", film);
-        return getFilm(film.getId()).get();
+        return film;
     }
 
     @Override
@@ -109,7 +126,8 @@ public class FilmDbStorage implements FilmStorage {
                     getGenre(id),
                     mpaStorage.getMPA(userRows.getInt("RATING_MPA_ID")),
                     userRows.getInt("rate"),
-                    getLikes(id)
+                    getLikes(id),
+                    directorStorage.getDirectors(id)
             );
 
             log.info("Найден пользователь: {} {}", film.getId(), film.getName());
@@ -134,6 +152,22 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
+        Director director = new Director(directorID, "TEST");
+        if (!directorStorage.findAll().contains(director)) {
+            throw new NotFoundParameterException("BAD directorID");
+        }
+        String sort = "f.RELEASEDATE";
+        if (sortBy.equals("likes")) {
+            sort = "COUNT(FL.USER_ID)";
+        }
+        String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
+                "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
+    }
+
+    public Film makeFilm(ResultSet rs) throws SQLException {
+    @Override
     public List<Film> getCommonFilms(Integer userId, Integer friendId) {
         String sql = "select *\n" +
                 "from FILMS\n" +
@@ -154,7 +188,8 @@ public class FilmDbStorage implements FilmStorage {
                 getGenre(rs.getInt("FILM_ID")),
                 mpaStorage.getMPA(rs.getInt("rating_MPA_id")),
                 rs.getInt("rate"),
-                getLikes(rs.getInt("FILM_ID"))
+                getLikes(rs.getInt("FILM_ID")),
+                directorStorage.getDirectors(rs.getInt("FILM_ID"))
         );
     }
 
@@ -182,4 +217,5 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(f.getId());
         }
     }
+
 }

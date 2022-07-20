@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.Genre;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -44,6 +42,12 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmID);
     }
+
+    @Override
+    public Collection<Genre> findGenresByFilm(Integer filmID) {
+        String sql = "SELECT * FROM FILM_GENRE join GENRE G2 on G2.GENRE_ID = FILM_GENRE.GENRE_ID WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs), filmID);    }
+
 
     private Genre makeGenre(ResultSet rs) throws SQLException {
         return new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));

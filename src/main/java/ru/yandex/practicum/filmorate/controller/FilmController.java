@@ -55,6 +55,11 @@ public class FilmController {
         return filmService.getTopFilmsByLikes(filmService.findAll(), count);
     }
 
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
+        return filmService.findFilmsByDirector(directorId, sortBy);
+    }
+
     @GetMapping("/common")
     public Collection<Film> getCommonFilms(@RequestParam Integer userId, @RequestParam Integer friendId) throws NotFoundParameterException {
         return filmService.getCommonFilms(userId, friendId);
