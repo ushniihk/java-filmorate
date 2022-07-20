@@ -82,4 +82,11 @@ public class FilmService {
         return (id == null || id < 0);
     }
 
+    public Collection<Film> getCommonFilms(Integer userId, Integer friendId) throws NotFoundParameterException {
+        if (checkID(userId) || checkID(friendId))
+            throw new NotFoundParameterException("bad id");
+        Collection<Film> commonFilms = filmStorage.getCommonFilms(userId, friendId);
+        return getTopFilmsByLikes(commonFilms, commonFilms.size());
+    }
+
 }

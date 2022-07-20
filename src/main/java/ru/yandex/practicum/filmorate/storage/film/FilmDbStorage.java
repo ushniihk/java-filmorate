@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -130,6 +131,17 @@ public class FilmDbStorage implements FilmStorage {
     public void removeLike(Integer filmID, Integer userID) {
         String sqlQuery = "DELETE FROM FILM_LIKES WHERE FILM_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(sqlQuery, filmID, userID);
+    }
+
+    @Override
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        String sql = "select *\n" +
+                "from FILMS\n" +
+                "where FILM_ID in (select FILM_ID\n" +
+                "                  from ((select FILM_ID from FILM_LIKES where USER_ID = ?)\n" +
+                "                        INTERSECT\n" +
+                "                        (select FILM_ID from FILM_LIKES where USER_ID = ?)))";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 
     private Film makeFilm(ResultSet rs) throws SQLException {
