@@ -8,6 +8,7 @@ Drop table IF EXISTS FRIENDSHIP;
 Drop table IF EXISTS GENRE;
 Drop table IF EXISTS USERS;
 Drop table IF EXISTS DIRECTORS;
+Drop table IF EXISTS REVIEWS;
 
 CREATE TABLE IF NOT EXISTS rating_mpa
 (
@@ -80,4 +81,22 @@ CREATE TABLE IF NOT EXISTS FILMS_DIRECTORS
     director_id int references DIRECTORS (director_id) on delete cascade,
     film_id int references films (film_id) on delete cascade,
     primary key (film_id, director_id)
+);
+
+create table IF NOT EXISTS REVIEWS
+(
+    REVIEW_ID   INTEGER auto_increment,
+    CONTENT     CHARACTER VARYING(500) not null,
+    IS_POSITIVE BOOLEAN                not null,
+    USER_ID     INTEGER                not null,
+    USEFUL      INTEGER default 0,
+    FILM_ID     INTEGER                not null,
+
+        primary key (REVIEW_ID),
+
+        foreign key (FILM_ID) references FILMS
+            on delete cascade,
+
+        foreign key (USER_ID) references USERS
+            on delete cascade
 );
