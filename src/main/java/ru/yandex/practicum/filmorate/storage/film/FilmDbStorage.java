@@ -56,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
 
-            for (Director d : film.getDirectors()) {
+            for (Director d: film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -90,8 +90,7 @@ public class FilmDbStorage implements FilmStorage {
 
             directorStorage.removeDirector(film.getId());
 
-
-            for (Director d : film.getDirectors()) {
+            for (Director d: film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -152,8 +151,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws
-            NotFoundParameterException {
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
         Director director = new Director(directorID, "TEST");
         if (!directorStorage.findAll().contains(director)) {
             throw new NotFoundParameterException("BAD directorID");
@@ -212,5 +210,3 @@ public class FilmDbStorage implements FilmStorage {
         return affectedRows != 0;
     }
 }
-
-
