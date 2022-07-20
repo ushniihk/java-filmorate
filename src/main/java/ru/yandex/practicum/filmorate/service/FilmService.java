@@ -94,12 +94,6 @@ public class FilmService {
         return filmStorage.findFilmsByDirector(directorID, sortBy);
     }
 
-    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
-        if (checkID(directorID))
-            throw new NotFoundParameterException("bad id");
-        return filmStorage.findFilmsByDirector(directorID, sortBy);
-    }
-
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
     }
