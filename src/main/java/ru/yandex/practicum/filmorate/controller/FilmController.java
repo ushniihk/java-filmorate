@@ -61,7 +61,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void removeFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
-        filmService.removeFilm(filmId);
+    public void deleteFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
+        filmService.deleteFilm(filmId);
     }
 }
