@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.director;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.model.Director;
 
 import java.sql.ResultSet;
@@ -25,12 +26,13 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public Director getDirector(Integer id) {
+    public Director getDirector(Integer id) throws NotFoundParameterException {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM DIRECTORS WHERE DIRECTOR_ID = ?", id);
         if (userRows.next()) {
             return new Director(id, userRows.getString("DIRECTOR_NAME"));
         }
-        return null;    }
+        throw new NotFoundParameterException("BAD ID");
+    }
 
     @Override
     public void addDirector(Integer ID, Integer filmID) {
@@ -39,9 +41,9 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     @Override
-    public void removeDirector(Integer directorID) {
-        String sqlQuery = "DELETE FROM FILMS_DIRECTORS WHERE DIRECTOR_ID = ?";
-        jdbcTemplate.update(sqlQuery, directorID);
+    public void removeDirector(Integer filmID) {
+        String sqlQuery = "DELETE FROM FILMS_DIRECTORS WHERE FILM_ID = ?";
+        jdbcTemplate.update(sqlQuery, filmID);
     }
 
     public Collection<Director> getDirectors(Integer id) {
@@ -65,21 +67,20 @@ public class DirectorDbStorage implements DirectorStorage {
     public Director createDirector(Director director) {
         String sqlQuery = "INSERT INTO DIRECTORS (DIRECTOR_NAME) VALUES (?)";
         jdbcTemplate.update(sqlQuery, director.getName());
-        setID(director);
+        director.setId(setID());
         return director;
     }
 
     @Override
-    public void deleteDirector(Integer directorID){
+    public void deleteDirector(Integer directorID) {
         String sqlQuery = "DELETE FROM DIRECTORS WHERE DIRECTOR_ID = ?";
         jdbcTemplate.update(sqlQuery, directorID);
     }
 
-    private void setID(Director director) {
-        for (Director d : findAll()) {
-            if (d.equals(director))
-                director.setId(d.getId());
-        }
+    private Integer setID() {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT COUNT(DIRECTOR_ID) AS ID FROM DIRECTORS ");
+        if (userRows.next()) {
+            return userRows.getInt("ID");
+        } else return null;
     }
-
-}
+    }

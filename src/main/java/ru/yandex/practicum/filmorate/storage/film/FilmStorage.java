@@ -25,5 +25,5 @@ public interface FilmStorage {
 
     Film makeFilm(ResultSet rs) throws SQLException;
 
-    Collection<Film> findFilmsByDirector(Integer directorID, String sortBy);
+    Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
 }

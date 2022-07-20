@@ -24,14 +24,14 @@ public class Film {
     @EqualsAndHashCode.Exclude
     private Collection<Integer> likes = new ArrayList<>();
     @EqualsAndHashCode.Exclude
-    private Collection<Director> director = new ArrayList<>();
+    private Collection<Director> directors = new ArrayList<>();
 
     public Film() {
         super();
     }
 
     public Film(Integer id, String name, String description, Date releaseDate, Integer duration,
-                Collection<Genre> genres, MPA mpa, Integer rate, Collection<Integer> likes, Collection<Director> director) {
+                Collection<Genre> genres, MPA mpa, Integer rate, Collection<Integer> likes, Collection<Director> directors) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -41,7 +41,7 @@ public class Film {
         this.mpa = mpa;
         this.rate = rate;
         this.likes = likes;
-        this.director = director;
+        this.directors = directors;
     }
 
     public void addLike(Integer userId) {
@@ -52,4 +52,8 @@ public class Film {
         likes.remove(userId);
     }
 
+    public void setNullDirectors(Collection<Director> directors) {
+        if (directors.size() == 0)
+        this.directors = null;
+    }
 }

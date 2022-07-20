@@ -56,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
 
-            for (Director d: film.getDirector()) {
+            for (Director d: film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -90,9 +90,11 @@ public class FilmDbStorage implements FilmStorage {
 
             directorStorage.removeDirector(film.getId());
 
-            for (Director d: film.getDirector()) {
+            for (Director d: film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
+
+            film.setNullDirectors(directorStorage.getDirectors(film.getId()));
 
             Set<Genre> set = Set.copyOf(film.getGenres());
 
@@ -100,12 +102,13 @@ public class FilmDbStorage implements FilmStorage {
                 genreStorage.createGenre(g.getId(), film.getId());
             }
 
+            film.setGenres(genreStorage.findGenresByFilm(film.getId()));
 
             mpaStorage.createMPA(film.getMpa(), film.getId());
 
         }
         log.debug("updated: {}", film);
-        return getFilm(film.getId()).get();
+        return film;
     }
 
     @Override
@@ -148,7 +151,11 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) {
+    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
+        Director director = new Director(directorID, "TEST");
+        if (!directorStorage.findAll().contains(director)) {
+            throw new NotFoundParameterException("BAD directorID");
+        }
         String sort = "f.RELEASEDATE";
         if (sortBy.equals("likes")) {
             sort = "COUNT(FL.USER_ID)";
