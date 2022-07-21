@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS films
     releaseDate   date,
     duration      INTEGER,
     rate      INTEGER,
-    rating_mpa_id INTEGER REFERENCES rating_mpa (rating_mpa_id)
+    rating_mpa_id INTEGER REFERENCES rating_mpa (rating_mpa_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS genre
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS genre
 
 CREATE TABLE IF NOT EXISTS film_genre
 (
-    film_id  int REFERENCES films (film_id),
-    genre_id int REFERENCES genre (genre_id),
+    film_id  int REFERENCES films (film_id) ON DELETE CASCADE,
+    genre_id int REFERENCES genre (genre_id) ON DELETE CASCADE,
     primary key (film_id, genre_id)
 );
 
@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS film_likes
 (
-    film_id int REFERENCES films (film_id),
-    user_id int REFERENCES users (user_id),
+    film_id int REFERENCES films (film_id) ON DELETE CASCADE,
+    user_id int REFERENCES users (user_id) ON DELETE CASCADE,
     primary key (film_id, user_id)
 );
 
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS friendship
 
 CREATE TABLE IF NOT EXISTS friends
 (
-    user_id    int REFERENCES users (user_id),
-    friend_id  int REFERENCES users (user_id),
-    friendship int REFERENCES friendship (friendship_id),
+    user_id    int REFERENCES users (user_id) ON DELETE CASCADE,
+    friend_id  int REFERENCES users (user_id) ON DELETE CASCADE,
+    friendship int REFERENCES friendship (friendship_id) ON DELETE CASCADE,
     primary key (user_id, friend_id)
 );
 

@@ -35,7 +35,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film findFilm(@PathVariable Integer id) throws NotFoundParameterException {
-        return filmService.getFilm(id).get();
+        return filmService.getFilm(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -58,6 +58,11 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
         return filmService.findFilmsByDirector(directorId, sortBy);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
+        filmService.deleteFilm(filmId);
     }
 
     @GetMapping("/common")
