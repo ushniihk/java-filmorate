@@ -28,5 +28,7 @@ public interface FilmStorage {
 
     Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
 
+    Collection<Film> getCommonFilms(Integer userId, Integer friendId);
+
     Collection<Film> searchAnyway(String query, String type);
 }
