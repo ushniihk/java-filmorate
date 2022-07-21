@@ -177,6 +177,12 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 
+    @Override
+    public boolean deleteFilm(Integer filmId) {
+        int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
+        return affectedRows != 0;
+    }
+
     public Film makeFilm(ResultSet rs) throws SQLException {
         return new Film(
                 rs.getInt("FILM_ID"),
@@ -215,10 +221,5 @@ public class FilmDbStorage implements FilmStorage {
             if (f.equals(film))
                 film.setId(f.getId());
         }
-    }
-    @Override
-    public boolean deleteFilm(Integer filmId) {
-        int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
-        return affectedRows != 0;
     }
 }
