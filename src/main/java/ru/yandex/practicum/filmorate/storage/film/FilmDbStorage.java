@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -166,6 +165,60 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
     }
 
+    @Override
+    public Collection<Film> searchAnyway(String query, String type) {
+        switch (type) {
+            case ("director"):
+                return searchByDirector(query);
+            case ("title"):
+                return searchByTitle(query);
+            case "director,title":
+                String row = "SELECT f.film_id " +
+                        "FROM films f " +
+                        "WHERE UPPER(f.name) LIKE UPPER('%'||?||'%') " +
+                        "UNION ALL " +
+                        "SELECT df.film_id " +
+                        "FROM FILMS_DIRECTORS df " +
+                        "JOIN directors d ON df.director_id=d.director_id " +
+                        "WHERE UPPER(d.DIRECTOR_NAME) LIKE UPPER('%'||?||'%')";
+                return jdbcTemplate.query(row, (rs, rowNum) -> makeFilm(rs), query, query);
+            case "title,director":
+                String rowS = "SELECT *, COUNT(DISTINCT l.user_id) AS L " +
+                        "FROM FILMS AS F " +
+                        "LEFT JOIN FILM_LIKES AS l ON F.FILM_ID = l.FILM_ID " +
+                        "LEFT JOIN FILMS_DIRECTORS AS FD ON FD.FILM_ID = f.FILM_ID " +
+                        "LEFT JOIN DIRECTORS AS D ON D.DIRECTOR_ID = FD.DIRECTOR_ID " +
+                        "WHERE F.NAME ILIKE CONCAT('%', ?, '%') " +
+                        "OR D.DIRECTOR_NAME ILIKE CONCAT('%', ?, '%') " +
+                        "GROUP BY F.film_id " +
+                        "ORDER BY L DESC;";
+                return jdbcTemplate.query(rowS, (rs, rowNum) -> makeFilm(rs), query, query);
+            default:
+                return null;
+        }
+    }
+
+    public Collection<Film> searchByDirector(String query) {
+        String sql = "SELECT * " +
+                "FROM DIRECTORS AS D " +
+                "LEFT JOIN FILMS_DIRECTORS FD ON D.DIRECTOR_ID = FD.DIRECTOR_ID " +
+                "LEFT JOIN FILMS F ON F.FILM_ID = FD.FILM_ID " +
+                "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
+                "WHERE DIRECTOR_NAME ILIKE CONCAT('%', ?, '%') " +
+                "GROUP BY FD.DIRECTOR_ID " +
+                "ORDER BY COUNT(FL.USER_ID)";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query);
+    }
+
+    public Collection<Film> searchByTitle(String query) {
+        final String row = "SELECT * " +
+                "FROM FILMS AS F " +
+                "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
+                "WHERE F.NAME ILIKE CONCAT('%', ?, '%')" +
+                "ORDER BY COUNT(FL.USER_ID)";
+        return jdbcTemplate.query(row, (rs, rowNum) -> makeFilm(rs), query);
+    }
+
     public Film makeFilm(ResultSet rs) throws SQLException {
         return new Film(
                 rs.getInt("FILM_ID"),
@@ -204,18 +257,5 @@ public class FilmDbStorage implements FilmStorage {
             if (f.equals(film))
                 film.setId(f.getId());
         }
-    }
-
-    @Override
-    public Collection<Film> searchByTitle(String str) {
-        final String subStringForSearch = "SELECT * FROM FILMS LEFT OUTER JOIN (SELECT FILM_ID, COUNT (*) LIKES FROM FILM_LIKES GROUP BY FILM_ID) AS l " +
-            "ON FILMS.FILM_ID = l.FILM_ID LEFT OUTER JOIN RATING_MPA ON FILMS.RATING_MPA_ID = RATING_MPA.RATING_MPA_ID " +
-            "WHERE FILMS.name ILIKE CONCAT('%', ? ,'%')" + //--WHERE  "name" LIKE ('%' || '?' || '%')::bytea  --!
-            "ORDER BY l.LIKES DESC;";
-
-        return jdbcTemplate.query(subStringForSearch, (rs, rowNum) -> {
-         //   final Long filmId = rs.getLong("film_id");
-            return makeFilm(rs);
-        }, str);
     }
 }
