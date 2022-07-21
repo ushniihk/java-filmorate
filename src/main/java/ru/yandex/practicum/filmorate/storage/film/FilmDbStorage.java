@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -165,6 +166,23 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), directorID);
     }
 
+    @Override
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        String sql = "select *\n" +
+                "from FILMS\n" +
+                "where FILM_ID in (select FILM_ID\n" +
+                "                  from ((select FILM_ID from FILM_LIKES where USER_ID = ?)\n" +
+                "                        INTERSECT\n" +
+                "                        (select FILM_ID from FILM_LIKES where USER_ID = ?)))";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), userId, friendId);
+    }
+
+    @Override
+    public boolean deleteFilm(Integer filmId) {
+        int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
+        return affectedRows != 0;
+    }
+
     public Film makeFilm(ResultSet rs) throws SQLException {
         return new Film(
                 rs.getInt("FILM_ID"),
@@ -203,10 +221,5 @@ public class FilmDbStorage implements FilmStorage {
             if (f.equals(film))
                 film.setId(f.getId());
         }
-    }
-    @Override
-    public boolean deleteFilm(Integer filmId) {
-        int affectedRows = jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", filmId);
-        return affectedRows != 0;
     }
 }

@@ -64,4 +64,9 @@ public class FilmController {
     public void deleteFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
         filmService.deleteFilm(filmId);
     }
+
+    @GetMapping("/common")
+    public Collection<Film> getCommonFilms(@RequestParam Integer userId, @RequestParam Integer friendId) throws NotFoundParameterException {
+        return filmService.getCommonFilms(userId, friendId);
+    }
 }

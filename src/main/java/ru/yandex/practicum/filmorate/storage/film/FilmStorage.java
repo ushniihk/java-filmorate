@@ -28,4 +28,6 @@ public interface FilmStorage {
     Film makeFilm(ResultSet rs) throws SQLException;
 
     Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
+
+    Collection<Film> getCommonFilms(Integer userId, Integer friendId);
 }
