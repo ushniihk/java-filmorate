@@ -72,10 +72,20 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public Optional<Film> getFilm(Integer id) throws NotFoundParameterException {
+    public Film getFilm(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return filmStorage.getFilm(id);
+        return filmStorage.getFilm(id).orElseThrow(() -> new NotFoundParameterException("No Film With Such Id"));
+    }
+
+    public void deleteFilm(int filmId) throws NotFoundParameterException {
+        if (checkID(filmId)) {
+            throw new NotFoundParameterException("bad id");
+        }
+        boolean deleted = filmStorage.deleteFilm(filmId);
+        if (!deleted) {
+            throw new NotFoundParameterException("No Film With Such Id");
+        }
     }
 
     public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
