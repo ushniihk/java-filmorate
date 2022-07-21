@@ -58,4 +58,9 @@ public class UserController {
         return userService.showCommonFriends(id, otherId);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable("id") int userId) throws NotFoundParameterException {
+        userService.deleteUser(userId);
+    }
+
 }

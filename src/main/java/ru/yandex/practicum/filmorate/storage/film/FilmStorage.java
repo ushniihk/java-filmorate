@@ -17,6 +17,8 @@ public interface FilmStorage {
 
     Film update(Film film) throws NotFoundParameterException;
 
+    boolean deleteFilm(Integer filmId);
+
     Optional<Film> getFilm(Integer id) throws NotFoundParameterException;
 
     void createLike(Integer filmID, Integer userID);
@@ -26,4 +28,6 @@ public interface FilmStorage {
     Film makeFilm(ResultSet rs) throws SQLException;
 
     Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
+
+    Collection<Film> getCommonFilms(Integer userId, Integer friendId);
 }
