@@ -108,4 +108,9 @@ public class FilmService {
     public Collection<Film> search(String query, String type) {
         return filmStorage.searchAnyway(query, type);
     }
+
+    public Collection<Film> getPopularFilmsByGenreAndYear(Integer limit, Integer genreId, String year) {
+        Collection<Film> theMostPopularFilms = filmStorage.getPopularFilmsByGenreAndYear(genreId, year);
+        return getTopFilmsByLikes(theMostPopularFilms, limit);
+    }
 }

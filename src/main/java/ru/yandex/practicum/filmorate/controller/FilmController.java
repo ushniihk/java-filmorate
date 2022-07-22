@@ -50,10 +50,14 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count) throws IncorrectParameterException {
+    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count, @RequestParam(required = false) Integer genreId, @RequestParam(required = false) String year) throws IncorrectParameterException {
         if (count <= 0)
             throw new IncorrectParameterException("count");
-        return filmService.getTopFilmsByLikes(filmService.findAll(), count);
+        if (genreId != null || year != null) {
+            return filmService.getPopularFilmsByGenreAndYear(count, genreId, year);
+        } else {
+            return filmService.getTopFilmsByLikes(filmService.findAll(), count);
+        }
     }
 
     @GetMapping("/director/{directorId}")
