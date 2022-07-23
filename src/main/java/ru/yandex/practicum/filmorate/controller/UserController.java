@@ -63,7 +63,7 @@ public class UserController {
     public void deleteUser(@PathVariable("id") int userId) throws NotFoundParameterException {
         userService.deleteUser(userId);
     }
-    
+
     @GetMapping("/{id}/recommendations")
     public Collection<Film> getFilmsByRecommendations(@PathVariable int id) throws NotFoundParameterException {
         return userService.getFilmsByRecommendations(id);

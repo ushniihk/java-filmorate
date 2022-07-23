@@ -29,9 +29,12 @@ public interface UserStorage {
 
     void deleteFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException;
 
-    Collection<Film>getFilmsByRecommendations(int id) throws NotFoundParameterException;
+    Collection<Film> getFilmsByRecommendations(int id) throws NotFoundParameterException;
+
     Map<Integer, Collection<Integer>> getUsersAndLikes();
+
     int getUserIdWithCommonLikes(int id);
+
     Collection<Integer> getFilmsIdByRecommendations(int id);
 }
 
