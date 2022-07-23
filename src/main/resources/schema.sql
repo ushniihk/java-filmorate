@@ -8,8 +8,8 @@ Drop table IF EXISTS FRIENDSHIP;
 Drop table IF EXISTS GENRE;
 Drop table IF EXISTS USERS cascade;
 Drop table IF EXISTS DIRECTORS;
-Drop table IF EXISTS REVIEWS;
-Drop table IF EXISTS REVIEW_LIKE;
+Drop table IF EXISTS REVIEWS cascade;
+Drop table IF EXISTS REVIEW_LIKE cascade;
 
 CREATE TABLE IF NOT EXISTS rating_mpa
 (
@@ -104,5 +104,5 @@ create table IF NOT EXISTS REVIEW_LIKE
     LIKE_TYPE BOOLEAN,
     primary key (USER_ID, REVIEW_ID),
     foreign key (REVIEW_ID) references REVIEWS (REVIEW_ID) on delete cascade,
-    foreign key (USER_ID) references USERS (USER_ID) on delete cascade,
+    foreign key (USER_ID) references USERS (USER_ID) on delete cascade
 );

@@ -35,11 +35,10 @@ public class ReviewDbStorage implements ReviewStorage {
         log.debug("added: {}", review);
         return review;
 
-
     }
 
     @Override
-    public Review update(Review review) throws NotFoundParameterException {
+    public Review updateReview(Review review) throws NotFoundParameterException {
         return null;
     }
 
@@ -54,12 +53,22 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void createLike(Integer filmID, Integer userID) {
+    public void createReviewLike(Integer filmID, Integer userID) {
 
     }
 
     @Override
-    public void removeLike(Integer filmID, Integer userID) {
+    public void deleteReviewLike(Integer filmID, Integer userID) {
+
+    }
+
+    @Override
+    public void createReviewDislike(Integer filmID, Integer userID) {
+
+    }
+
+    @Override
+    public void deleteReviewDislike(Integer filmID, Integer userID) {
 
     }
 }
