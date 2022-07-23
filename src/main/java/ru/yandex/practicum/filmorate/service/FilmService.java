@@ -105,4 +105,7 @@ public class FilmService {
         return getTopFilmsByLikes(commonFilms, commonFilms.size());
     }
 
+    public Collection<Film> search(String query, String type) {
+        return filmStorage.searchAnyway(query, type);
+    }
 }

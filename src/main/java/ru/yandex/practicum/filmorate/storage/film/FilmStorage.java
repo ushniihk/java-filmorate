@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage {
@@ -30,4 +29,6 @@ public interface FilmStorage {
     Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
 
     Collection<Film> getCommonFilms(Integer userId, Integer friendId);
+
+    Collection<Film> searchAnyway(String query, String type);
 }
