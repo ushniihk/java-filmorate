@@ -3,9 +3,11 @@ package ru.yandex.practicum.filmorate.storage.user;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserStorage {
@@ -27,5 +29,12 @@ public interface UserStorage {
 
     void deleteFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException;
 
+    Collection<Film> getFilmsByRecommendations(int id) throws NotFoundParameterException;
+
+    Map<Integer, Collection<Integer>> getUsersAndLikes();
+
+    int getUserIdWithCommonLikes(int id);
+
+    Collection<Integer> getFilmsIdByRecommendations(int id);
 }
 
