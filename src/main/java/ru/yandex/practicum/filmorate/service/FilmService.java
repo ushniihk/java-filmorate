@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -53,7 +54,7 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
+    private Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
         return films.stream()
                 .sorted(Comparator.comparingInt(f -> f.getLikes().size() * (-1)))
                 .limit(count)
@@ -109,8 +110,15 @@ public class FilmService {
         return filmStorage.searchAnyway(query, type);
     }
 
-    public Collection<Film> getPopularFilmsByGenreAndYear(Integer limit, Integer genreId, String year) {
-        Collection<Film> theMostPopularFilms = filmStorage.getPopularFilmsByGenreAndYear(genreId, year);
+    public Collection<Film> getPopularFilmsByParams(Integer limit, Integer genreId, String year) throws IncorrectParameterException {
+        Collection<Film> theMostPopularFilms;
+        if (limit <= 0)
+            throw new IncorrectParameterException("count");
+        if (genreId != null || year != null) {
+            theMostPopularFilms = filmStorage.getPopularFilmsByGenreAndYear(genreId, year);
+        } else {
+            theMostPopularFilms = findAll();
+        }
         return getTopFilmsByLikes(theMostPopularFilms, limit);
     }
 }
