@@ -57,7 +57,7 @@ public class FilmDbStorage implements FilmStorage {
             setID(film);
             Set<Genre> set = Set.copyOf(film.getGenres());
 
-            for (Director d: film.getDirectors()) {
+            for (Director d : film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -91,7 +91,7 @@ public class FilmDbStorage implements FilmStorage {
 
             directorStorage.removeDirector(film.getId());
 
-            for (Director d: film.getDirectors()) {
+            for (Director d : film.getDirectors()) {
                 directorStorage.addDirector(d.getId(), film.getId());
             }
 
@@ -250,6 +250,32 @@ public class FilmDbStorage implements FilmStorage {
                 getLikes(rs.getInt("FILM_ID")),
                 directorStorage.getDirectors(rs.getInt("FILM_ID"))
         );
+    }
+
+    public Collection<Film> getPopularFilmsByGenreAndYear(Integer genreId, String year) {
+        String condition;
+        String sql = "select *\n" +
+                "from FILMS\n" +
+                "where FILM_ID in (select FILM_ID\n" +
+                "                  from (select extract(YEAR from RELEASEDATE) as release_year, FILMS.FILM_ID, GENRE_ID\n" +
+                "                        from FILMS\n" +
+                "                                 join FILM_GENRE FG\n" +
+                "                                      on FILMS.FILM_ID = FG.FILM_ID)\n";
+
+        if (genreId != null && year != null) {
+            condition = "where GENRE_ID = ?\n" +
+                    "and release_year = ?)";
+            sql = sql + condition;
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), genreId, year);
+        } else if (genreId != null) {
+            condition = "where GENRE_ID = ?)";
+            sql = sql + condition;
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), genreId);
+        } else {
+            condition = "where release_year = ?)";
+            sql = sql + condition;
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), year);
+        }
     }
 
     private Collection<Genre> getGenre(Integer id) {
