@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.director;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.model.Director;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;

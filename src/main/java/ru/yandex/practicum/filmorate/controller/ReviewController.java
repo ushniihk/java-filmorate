@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 
 import java.util.Collection;
@@ -26,37 +23,55 @@ public class ReviewController {
 
     @PostMapping
     public Review create(@RequestBody Review review) throws CreatingException {
-        //   return reviewService.create(review);
-        return review;
+        return reviewService.create(review);
     }
 
     @PutMapping
-    public Review update(@RequestBody Review review) throws UpdateException {
-        // return reviewService.update(review);
-        return review;
+    public Review update(@RequestBody Review review) throws UpdateException, NotFoundParameterException {
+        return reviewService.update(review);
     }
 
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable Integer id) {
-        //  reviewService.deleteReview(id);
+        reviewService.deleteReview(id);
     }
 
     @GetMapping("/{id}")
     public Review getReview(@PathVariable Integer id) throws NotFoundParameterException {
-        //    return reviewService.getReview(id);
-        return null;
+        return reviewService.getReview(id);
     }
 
-
-    @GetMapping//дописать логику
-    public Collection<Review> getTopReviews(@RequestParam(required = false) Integer filmId,
-                                            @RequestParam(required = false, defaultValue = "10") Integer count) throws IncorrectParameterException {
-        {
-            if (count <= 0)
-                throw new IncorrectParameterException("count");
-            return null;
-            // return reviewService.getTopReviewsByUseful(reviewService.findAll(), count);
+    @GetMapping
+    public Collection<Review> getTopReviews(
+            @RequestParam(required = false) Integer filmId,
+            @RequestParam(required = false, defaultValue = "10") Integer count) throws IncorrectParameterException {
+        if (count <= 0) throw new IncorrectParameterException("Bad count");
+        if (filmId == null) {
+            return reviewService.findAll();
         }
-    }}
+        return reviewService.getTopReviewsByUseful(reviewService.findAll(), filmId, count);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void userLikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        reviewService.addLike(id, userId);
+    }
+
+    @PutMapping("/{id}/dislike/{userId}")
+    public void userDislikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        reviewService.addDislike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void userDeleteLike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        reviewService.deleteLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/dislike/{userId}")
+    public void userDeleteDislike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
+        reviewService.deleteDislike(id, userId);
+    }
+
+}
 
 
