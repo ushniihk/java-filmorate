@@ -100,7 +100,7 @@ create table IF NOT EXISTS REVIEW_LIKE
 (
     USER_ID   INTEGER not null,
     REVIEW_ID INTEGER not null,
-    LIKE_TYPE BOOLEAN,
+    LIKE_TYPE INTEGER,
     primary key (USER_ID, REVIEW_ID),
     foreign key (REVIEW_ID) references REVIEWS (REVIEW_ID) on delete cascade,
     foreign key (USER_ID) references USERS (USER_ID) on delete cascade

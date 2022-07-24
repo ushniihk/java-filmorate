@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-
 public class ReviewDbStorage implements ReviewStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -25,15 +24,19 @@ public class ReviewDbStorage implements ReviewStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     private Review makeReview(ResultSet rs) throws SQLException {
-        return new Review(
+
+        Integer useful = useful(rs.getInt("review_id"));
+        Review review= new Review(
                 rs.getInt("review_id"),
                 rs.getString("content"),
                 rs.getBoolean("is_positive"),
                 rs.getInt("user_id"),
-                rs.getInt("film_id")
-        );
+                rs.getInt("film_id"),
+                useful);
+
+        review.setUseful(useful);
+        return review;
     }
 
     @Override
@@ -43,40 +46,47 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review createReview(Review review) throws ValidationException, NotFoundParameterException {
-        if (findAll().contains(review)
-
-        ) {
+    public Review createReview(Review review) throws ValidationException {
+        if (findAll().contains(review)) {
             log.debug("Oh, no. validation failed");
             throw new ValidationException("oh, something was wrong");
         } else {
             String sqlQuery = "INSERT INTO REVIEWS (CONTENT, IS_POSITIVE, USER_ID, FILM_ID)" +
                     " VALUES (?, ?, ?, ?)";
-
             jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(),
                     review.getUserId(), review.getFilmId());
             setID(review);
-
             log.debug("added: {}", review);
-            //  return  getReview(review.getId()).get();
             return review;
         }
     }
 
     @Override
-    public Review updateReview(Review review) throws NotFoundParameterException {
-        return null;
+    public Review updateReview(Review review) {
+        String sqlQuery = "update REVIEWS set CONTENT = ?, IS_POSITIVE = ? where REVIEW_ID = ?";
+        jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
+        return getReview(review.getReviewId()).orElse(null);
     }
 
     @Override
-    public boolean deleteReview(Integer reviewId) {
-        return false;
+    public void deleteReview(Integer reviewId) {
+        String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
+        jdbcTemplate.update(sqlQuery, reviewId);
+    }
+
+    Integer useful(Integer id) {
+        String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID =" + id;
+        Integer useful = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (useful != null) {
+            return useful;
+        } else return 0;
     }
 
     @Override
-    public Optional<Review> getReview(Integer id) throws NotFoundParameterException {
+    public Optional<Review> getReview(Integer id) {
         SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEWS WHERE REVIEW_ID = ?", id);
-
+        String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID =" + id;
+        Integer useful = jdbcTemplate.queryForObject(sql, Integer.class);
 
         if (reviewRows.next()) {
             Review review = new Review(
@@ -84,12 +94,13 @@ public class ReviewDbStorage implements ReviewStorage {
                     reviewRows.getString("content"),
                     reviewRows.getBoolean("is_positive"),
                     reviewRows.getInt("user_id"),
-                    reviewRows.getInt("film_id")
-
-            );
+                    reviewRows.getInt("film_id"),
+                    useful);
 
             log.info("Найден отзыв: {}", review.getReviewId());
 
+            if (useful != null) review.setUseful(useful);
+            else review.setUseful(0);
             return Optional.of(review);
         } else {
             log.info("Отзыв с идентификатором {} не найден.", id);
@@ -98,23 +109,20 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void createReviewLike(Integer filmID, Integer userID) {
+    public void createReviewLikeDislike(Integer reviewId, Integer userID, Integer value) {
+        //   String sqlQuery = "update REVIEW_LIKE set LIKE_TYPE = ? where REVIEW_ID = ? and USER_ID=?";
+        //   jdbcTemplate.update(sqlQuery, value, reviewId, userID);
 
+        String sqlQuery = "INSERT INTO REVIEW_LIKE (REVIEW_ID, USER_ID, LIKE_TYPE)" +
+                " VALUES (?, ?, ?)";
+        jdbcTemplate.update(sqlQuery, reviewId, userID, value);
     }
 
-    @Override
-    public void deleteReviewLike(Integer filmID, Integer userID) {
-
-    }
 
     @Override
-    public void createReviewDislike(Integer filmID, Integer userID) {
-
-    }
-
-    @Override
-    public void deleteReviewDislike(Integer filmID, Integer userID) {
-
+    public void deleteReviewLikeDislike(Integer reviewId, Integer userID) {
+        String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID =? AND USER_ID= ?";
+        jdbcTemplate.update(sqlQuery, reviewId);
     }
 
     private void setID(Review review) {

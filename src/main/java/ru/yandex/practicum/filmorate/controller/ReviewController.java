@@ -24,7 +24,7 @@ public class ReviewController {
     }
 
     @PutMapping
-    public Review update(@RequestBody Review review) throws UpdateException, NotFoundParameterException {
+    public Review update(@RequestBody Review review) throws UpdateException, NotFoundParameterException, ValidationException, CreatingException {
         return reviewService.updateReview(review);
     }
 
@@ -52,22 +52,22 @@ public class ReviewController {
 
     @PutMapping("/{id}/like/{userId}")
     public void userLikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.addReviewLike(id, userId);
+        reviewService.createReviewLike(id, userId);
     }
 
     @PutMapping("/{id}/dislike/{userId}")
     public void userDislikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.addReviewDislike(id, userId);
+        reviewService.createReviewDislike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void userDeleteLike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.deleteReviewLike(id, userId);
+        reviewService.deleteReviewLikeDislike(id, userId);
     }
 
     @DeleteMapping("/{id}/dislike/{userId}")
     public void userDeleteDislike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.deleteReviewDislike(id, userId);
+        reviewService.deleteReviewLikeDislike(id, userId);
     }
 
 }

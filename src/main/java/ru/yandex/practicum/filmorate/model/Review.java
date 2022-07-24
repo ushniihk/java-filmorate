@@ -15,6 +15,8 @@ public class Review {
     private Boolean isPositive; // тип отзыва — негативный/положительный.
     private Integer userId;
     private Integer filmId;
+    private Integer useful;
+
     @EqualsAndHashCode.Exclude
     @JsonIgnore
     private Collection<Integer> reviewLikes; // коллекция лайков
@@ -22,19 +24,21 @@ public class Review {
     @JsonIgnore
     private Collection<Integer> reviewDislikes; //коллекция дизлайков
 
-    public Review(Integer reviewId, String content, Boolean isPositive, Integer userId, Integer filmId
-    ) {
+    public Review(Integer reviewId, String content, Boolean isPositive,
+                  Integer userId, Integer filmId,
+                  Integer useful) {
         this.reviewId = reviewId;
         this.content = content;
         this.isPositive = isPositive;
         this.userId = userId;
         this.filmId = filmId;
-        this.reviewLikes=new ArrayList<>();
-        this.reviewDislikes=new ArrayList<>();
+        this.useful = 0;
+        this.reviewLikes = new ArrayList<>();
+        this.reviewDislikes = new ArrayList<>();
 
     }
 
-    public void addReviewLike(Integer userId) {
+    public void createReviewLike(Integer userId) {
         reviewLikes.add(userId);
     }
 
@@ -42,7 +46,7 @@ public class Review {
         reviewLikes.remove(userId);
     }
 
-    public void addReviewDislike(Integer userId) {
+    public void createReviewDislike(Integer userId) {
         reviewDislikes.add(userId);
     }
 
