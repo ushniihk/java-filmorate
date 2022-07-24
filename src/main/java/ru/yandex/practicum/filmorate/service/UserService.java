@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -74,6 +76,15 @@ public class UserService {
         if (checkID(otherId))
             throw new NotFoundParameterException("bad id");
         return userStorage.showCommonFriends(id, otherId);
+    }
+
+    public Collection<Film> getFilmsByRecommendations(Integer id) throws NotFoundParameterException {
+        if (checkID(id))
+            throw new NotFoundParameterException("bad id");
+        if (userStorage.getUsersAndLikes().get(id).size() == 0 || userStorage.getUserIdWithCommonLikes(id) == -1 ||
+                userStorage.getFilmsIdByRecommendations(id).size() == 0)
+            return new ArrayList<>();
+        return userStorage.getFilmsByRecommendations(id);
     }
 
     private boolean checkID(Integer id) {
