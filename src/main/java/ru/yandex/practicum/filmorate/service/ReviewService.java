@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.model.User;
@@ -27,8 +28,8 @@ public class ReviewService {
     private final UserStorage userStorage;
 
 
-    public Review createReview(Review review) throws CreatingException, NotFoundParameterException {
-        if (review.getContent().isBlank() ||
+    public Review createReview(Review review) throws CreatingException, NotFoundParameterException, ValidationException {
+        if ( review.getContent().isBlank()||
                 review.getFilmId() < 0 ||
                 review.getUserId() < 0) {
             throw new NotFoundParameterException("Bad id or content");
@@ -58,7 +59,7 @@ public class ReviewService {
 
     public Collection<Review> getTopReviewsByUseful(Collection<Review> reviews, Integer filmId, Integer count) {
         return reviews.stream()
-                //  .sorted(Comparator.comparingInt(f -> f.getLikes().size() * (-1)))
+               //   .sorted(Comparator.comparingInt(f -> f.getLikes().size() * (-1)))
                 .limit(count)
                 .collect(Collectors.toList());
     }

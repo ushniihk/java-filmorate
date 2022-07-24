@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.review;
 
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
 
 import java.util.Collection;
@@ -11,7 +12,7 @@ public interface ReviewStorage {
 
     Collection<Review> findAll();
 
-    Review createReview(Review review) throws CreatingException;
+    Review createReview(Review review) throws CreatingException, ValidationException, NotFoundParameterException;
 
     Review updateReview(Review review) throws NotFoundParameterException;
 

@@ -1,13 +1,13 @@
-Drop table IF EXISTS FILM_GENRE;
-Drop table IF EXISTS FILM_LIKES;
-Drop table IF EXISTS FILMS_DIRECTORS;
+Drop table IF EXISTS FILM_GENRE cascade;
+Drop table IF EXISTS FILM_LIKES cascade;
+Drop table IF EXISTS FILMS_DIRECTORS cascade;
 Drop table IF EXISTS FILMS cascade;
-Drop table IF EXISTS RATING_MPA;
-Drop table IF EXISTS FRIENDS;
-Drop table IF EXISTS FRIENDSHIP;
-Drop table IF EXISTS GENRE;
+Drop table IF EXISTS RATING_MPA cascade;
+Drop table IF EXISTS FRIENDS cascade;
+Drop table IF EXISTS FRIENDSHIP cascade;
+Drop table IF EXISTS GENRE cascade;
 Drop table IF EXISTS USERS cascade;
-Drop table IF EXISTS DIRECTORS;
+Drop table IF EXISTS DIRECTORS cascade;
 Drop table IF EXISTS REVIEWS cascade;
 Drop table IF EXISTS REVIEW_LIKE cascade;
 
@@ -90,7 +90,6 @@ create table IF NOT EXISTS REVIEWS
     CONTENT     CHARACTER VARYING(500) not null,
     IS_POSITIVE BOOLEAN                not null,
     USER_ID     INTEGER                not null,
-    USEFUL      INTEGER default 0,
     FILM_ID     INTEGER                not null,
     primary key (REVIEW_ID),
     foreign key (FILM_ID) references FILMS (FILM_ID) on delete cascade,
