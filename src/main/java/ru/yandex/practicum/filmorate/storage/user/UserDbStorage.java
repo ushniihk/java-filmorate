@@ -9,7 +9,9 @@ import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final FilmStorage filmStorage;
 
     @Override
     public Collection<User> findAll() {
@@ -145,6 +148,49 @@ public class UserDbStorage implements UserStorage {
         jdbcTemplate.update(sqlQuery2, id, friendId);
     }
 
+    @Override
+    public Map<Integer, Collection<Integer>> getUsersAndLikes() {
+        Map<Integer, Collection<Integer>> usersLikes = new HashMap<>();
+        for (User user : findAll()) {
+            usersLikes.put(user.getId(), getLikedFilmsByUser(user.getId()));
+        }
+        return usersLikes;
+    }
+
+    @Override
+    public int getUserIdWithCommonLikes(int id) {
+        Collection<Integer> usersLikes = getUsersAndLikes().get(id);
+        long count = 0;
+        int userID = -1;
+        for (Integer i : getUsersAndLikes().keySet()) {
+            if (id != i) {
+                long l = getUsersAndLikes().get(i).stream().filter(usersLikes::contains).count();
+                if (l > count) {
+                    count = l;
+                    userID = i;
+                }
+            }
+        }
+        return userID;
+    }
+
+    @Override
+    public Collection<Integer> getFilmsIdByRecommendations(int id) {
+        Collection<Integer> films = getUsersAndLikes().get(getUserIdWithCommonLikes(id));
+        films.removeAll(getUsersAndLikes().get(id));
+        return films;
+    }
+
+    @Override
+    public Collection<Film> getFilmsByRecommendations(int id) throws NotFoundParameterException {
+        Collection<Film> recommendations = new ArrayList<>();
+        for (Integer i : getFilmsIdByRecommendations(id)) {
+            Optional<Film> film = filmStorage.getFilm(i);
+            film.ifPresent(recommendations::add);
+        }
+        return recommendations;
+    }
+
     private Collection<Integer> getFriendsByUser(Integer id) {
         String sql = "SELECT friend_id FROM FRIENDS WHERE USER_ID = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFriends(rs), id);
@@ -177,4 +223,10 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlQuery2, user.getId(), i, 1);
         }
     }
+
+    private Collection<Integer> getLikedFilmsByUser(Integer id) {
+        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
+    }
+
 }
