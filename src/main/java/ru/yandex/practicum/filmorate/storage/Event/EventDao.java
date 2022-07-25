@@ -10,6 +10,6 @@ public interface EventDao {
 
     Collection<Event> getEvents(Integer id);
 
-    void add(Object object, EventType eventType, EventOperations operation);
+    void add(Integer userId, Integer entityId, EventType eventType, EventOperations operation);
 
 }

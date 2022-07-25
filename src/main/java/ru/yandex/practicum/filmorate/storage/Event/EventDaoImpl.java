@@ -3,12 +3,11 @@ package ru.yandex.practicum.filmorate.storage.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.model.EventOperations;
-import ru.yandex.practicum.filmorate.model.EventType;
+import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Collection;
 
 @Repository
@@ -33,8 +32,11 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void add(Object object, EventType eventType, EventOperations operation) {
+    public void add(Integer userId, Integer entityId, EventType eventType, EventOperations operation) {
+        String query = "INSERT INTO events (user_id, event_type, event_operation, time_stamp, entity_id) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
+        jdbcTemplate.update(query, userId, eventType, operation, Instant.now(), entityId);
     }
 
     //еще ивент маппинг
