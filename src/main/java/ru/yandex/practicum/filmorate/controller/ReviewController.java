@@ -42,7 +42,6 @@ public class ReviewController {
     public Collection<Review> getTopReviews(
             @RequestParam(required = false) Integer filmId,
             @RequestParam(required = false, defaultValue = "10") Integer count) throws IncorrectParameterException {
-        if (count <= 0) throw new IncorrectParameterException("Bad count");
         if (filmId == null) {
             return reviewService.findAll();
         } else {

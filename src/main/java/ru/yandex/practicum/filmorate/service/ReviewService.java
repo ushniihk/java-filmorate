@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
+import ru.yandex.practicum.filmorate.exceptions.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
@@ -63,7 +64,8 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<Review> getTopReviewsByUseful(Collection<Review> reviews, Integer filmId, Integer count) {
+    public Collection<Review> getTopReviewsByUseful(Collection<Review> reviews, Integer filmId, Integer count) throws IncorrectParameterException {
+        if (count <= 0) throw new IncorrectParameterException("Bad count");
         return reviews.stream()
                 .sorted(Comparator.comparingInt(r -> r.getFilmId() * (-1)))
                 .filter(r -> Objects.equals(r.getFilmId(), filmId))
@@ -83,7 +85,7 @@ public class ReviewService {
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().createReviewLike(user.get().getId());
+            review.get().createReviewLike(userId);
             reviewStorage.createReviewLikeDislike(reviewId, userId, value);
         } else throw new NotFoundParameterException("bad id");
     }
@@ -96,7 +98,7 @@ public class ReviewService {
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().createReviewDislike(user.get().getId());
+            review.get().createReviewDislike(userId);
             reviewStorage.createReviewLikeDislike(reviewId, userId, value);
         } else throw new NotFoundParameterException("bad id");
     }
@@ -108,8 +110,8 @@ public class ReviewService {
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().deleteReviewLike(user.get().getId());
-            review.get().deleteReviewDislike(user.get().getId());
+            review.get().deleteReviewLike(userId);
+            review.get().deleteReviewDislike(userId);
             reviewStorage.deleteReviewLikeDislike(reviewId, userId);
         } else throw new NotFoundParameterException("bad id");
     }

@@ -27,7 +27,7 @@ public class ReviewDbStorage implements ReviewStorage {
     private Review makeReview(ResultSet rs) throws SQLException {
 
         Integer useful = useful(rs.getInt("review_id"));
-        Review review= new Review(
+        Review review = new Review(
                 rs.getInt("review_id"),
                 rs.getString("content"),
                 rs.getBoolean("is_positive"),
@@ -74,7 +74,7 @@ public class ReviewDbStorage implements ReviewStorage {
         jdbcTemplate.update(sqlQuery, reviewId);
     }
 
-    Integer useful(Integer id) {
+    private Integer useful(Integer id) {
         String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID =" + id;
         Integer useful = jdbcTemplate.queryForObject(sql, Integer.class);
         if (useful != null) {
@@ -85,9 +85,7 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Optional<Review> getReview(Integer id) {
         SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEWS WHERE REVIEW_ID = ?", id);
-        String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID =" + id;
-        Integer useful = jdbcTemplate.queryForObject(sql, Integer.class);
-
+        Integer useful = useful(id);
         if (reviewRows.next()) {
             Review review = new Review(
                     reviewRows.getInt("REVIEW_ID"),
@@ -98,9 +96,7 @@ public class ReviewDbStorage implements ReviewStorage {
                     useful);
 
             log.info("Найден отзыв: {}", review.getReviewId());
-
-            if (useful != null) review.setUseful(useful);
-            else review.setUseful(0);
+            review.setUseful(useful);
             return Optional.of(review);
         } else {
             log.info("Отзыв с идентификатором {} не найден.", id);
@@ -110,9 +106,6 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public void createReviewLikeDislike(Integer reviewId, Integer userID, Integer value) {
-        //   String sqlQuery = "update REVIEW_LIKE set LIKE_TYPE = ? where REVIEW_ID = ? and USER_ID=?";
-        //   jdbcTemplate.update(sqlQuery, value, reviewId, userID);
-
         String sqlQuery = "INSERT INTO REVIEW_LIKE (REVIEW_ID, USER_ID, LIKE_TYPE)" +
                 " VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery, reviewId, userID, value);
