@@ -12,7 +12,7 @@ public class Event {
     private Integer eventId;
     private Long entityId;
 
-    public Event(Long timestamp, Integer userId, String eventType, String operation, Integer eventId, Long entityId) {
+    public Event(Long timestamp, Integer userId, Integer eventId, Long entityId, String eventType, String operation) {
         this.timestamp = timestamp;
         this.userId = userId;
         this.eventType = eventType;

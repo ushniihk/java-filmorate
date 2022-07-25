@@ -8,8 +8,8 @@ import java.util.Collection;
 
 public interface EventDao {
 
-    Collection<Event> getEvents(Integer id);
+    Collection<Event> getEvents(Integer id);        //слежение за пользователем
 
-    void add(Integer userId, Integer entityId, EventType eventType, EventOperations operation);
+    void add(Integer userId, Integer entityId, EventType eventType, EventOperations operation);     //добавить лог
 
 }

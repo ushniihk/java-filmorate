@@ -9,8 +9,11 @@ import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.model.EventOperations;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.Event.EventDao;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.Date;
@@ -27,6 +30,7 @@ public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmStorage filmStorage;
+    private final EventDao eventDao;
 
     @Override
     public Collection<User> findAll() {
@@ -138,12 +142,14 @@ public class UserDbStorage implements UserStorage {
     public void addFriend(Integer id, Integer friendId) {
         String sqlQuery2 = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID, FRIENDSHIP) VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery2, id, friendId, 1);
+        eventDao.add(id, friendId, EventType.FRIEND, EventOperations.ADD);
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
         String sqlQuery2 = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sqlQuery2, id, friendId);
+        eventDao.add(id, friendId, EventType.FRIEND, EventOperations.REMOVE);
     }
 
     @Override

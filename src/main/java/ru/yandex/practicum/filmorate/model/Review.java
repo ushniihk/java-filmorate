@@ -13,8 +13,7 @@ public class Review {
     private Integer filmId;
     private Integer useful;
 
-    public Review(Integer reviewId, String content, Boolean isPositive,
-                  Integer userId, Integer filmId) {
+    public Review(Integer reviewId, String content, Boolean isPositive, Integer userId, Integer filmId) {
         this.reviewId = reviewId;
         this.content = content;
         this.isPositive = isPositive;
@@ -22,6 +21,4 @@ public class Review {
         this.filmId = filmId;
         this.useful = 0;
     }
-
-
 }
