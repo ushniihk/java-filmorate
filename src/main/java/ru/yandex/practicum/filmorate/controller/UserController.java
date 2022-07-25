@@ -4,12 +4,14 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.*;
+import ru.yandex.practicum.filmorate.exceptions.CreatingException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
+import ru.yandex.practicum.filmorate.exceptions.UpdateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.*;
+import java.util.Collection;
 
 @RestController
 @Slf4j

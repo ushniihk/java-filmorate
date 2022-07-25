@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
@@ -93,7 +92,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> getUser(Integer id) throws NotFoundParameterException {
+    public Optional<User> getUser(Integer id) {
 
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE USER_ID = ?", id);
 
@@ -129,7 +128,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> showCommonFriends(Integer id, Integer otherId) throws NotFoundParameterException {
+    public Collection<User> showCommonFriends(Integer id, Integer otherId) {
         String sql = "SELECT * FROM users WHERE user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) " +
                 "AND user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) ORDER BY USER_ID;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs), id, otherId);
