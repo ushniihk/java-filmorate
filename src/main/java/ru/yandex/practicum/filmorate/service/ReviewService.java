@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
@@ -20,17 +21,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewStorage reviewStorage;
     private final UserStorage userStorage;
 
+    private enum LikeValue {
+        LIKE(1), DISLIKE(-1);
+        private Integer dbView;
+
+        LikeValue(Integer dbView) {
+            this.dbView = dbView;
+        }
+
+        public Integer getDbView() {
+            return dbView;
+        }
+    }
+
     public Review createReview(Review review) throws CreatingException, NotFoundParameterException, ValidationException {
-        if (review.getContent().isBlank() ||
-                review.getFilmId() < 0 ||
-                review.getUserId() < 0) {
+        if (checkRawReview(review)) {
             throw new NotFoundParameterException("Bad id or content");
         } else if (review.getIsPositive() == null) {
             throw new CreatingException("Bad type or no type");
@@ -39,9 +50,7 @@ public class ReviewService {
     }
 
     public Review updateReview(Review review) throws NotFoundParameterException, ValidationException, CreatingException {
-        if (review.getContent().isBlank() ||
-                review.getFilmId() < 0 ||
-                review.getUserId() < 0) {
+        if (checkRawReview(review)) {
             throw new NotFoundParameterException("Bad id or content");
         } else if (!reviewStorage.findAll().contains(review)) {
             return reviewStorage.updateReview(review);
@@ -55,7 +64,7 @@ public class ReviewService {
     }
 
     public Review getReview(@PathVariable Integer id) throws NotFoundParameterException {
-        return reviewStorage.getReview(id).orElseThrow(() -> new NotFoundParameterException("No Review With Such Id"));
+        return reviewStorage.getReview(id).orElseThrow(() -> new NotFoundParameterException("No review with such id"));
     }
 
     public Collection<Review> findAll() {
@@ -77,29 +86,29 @@ public class ReviewService {
         return (id == null || id < 0);
     }
 
+    private boolean checkRawReview(Review review) {
+        return review.getContent().isBlank() || review.getFilmId() < 0 || review.getUserId() < 0;
+    }
+
     public void createReviewLike(Integer reviewId, Integer userId) throws NotFoundParameterException {
-        Integer value = 1;
         if (checkID(reviewId) && checkID(userId)) throw new NotFoundParameterException("bad id");
 
         Optional<Review> review = reviewStorage.getReview(reviewId);
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().createReviewLike(userId);
-            reviewStorage.createReviewLikeDislike(reviewId, userId, value);
+            reviewStorage.createReviewLikeDislike(reviewId, userId, LikeValue.LIKE.getDbView());
         } else throw new NotFoundParameterException("bad id");
     }
 
     public void createReviewDislike(Integer reviewId, Integer userId) throws NotFoundParameterException {
-        Integer value = -1;
         if (checkID(reviewId) && checkID(userId)) throw new NotFoundParameterException("bad id");
 
         Optional<Review> review = reviewStorage.getReview(reviewId);
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().createReviewDislike(userId);
-            reviewStorage.createReviewLikeDislike(reviewId, userId, value);
+            reviewStorage.createReviewLikeDislike(reviewId, userId, LikeValue.DISLIKE.getDbView());
         } else throw new NotFoundParameterException("bad id");
     }
 
@@ -110,8 +119,6 @@ public class ReviewService {
         Optional<User> user = userStorage.getUser(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            review.get().deleteReviewLike(userId);
-            review.get().deleteReviewDislike(userId);
             reviewStorage.deleteReviewLikeDislike(reviewId, userId);
         } else throw new NotFoundParameterException("bad id");
     }

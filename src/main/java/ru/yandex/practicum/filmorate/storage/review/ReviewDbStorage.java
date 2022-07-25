@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.review;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
 
@@ -16,25 +16,20 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public ReviewDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private Review makeReview(ResultSet rs) throws SQLException {
-
         Integer useful = useful(rs.getInt("review_id"));
         Review review = new Review(
                 rs.getInt("review_id"),
                 rs.getString("content"),
                 rs.getBoolean("is_positive"),
                 rs.getInt("user_id"),
-                rs.getInt("film_id"),
-                useful);
-
+                rs.getInt("film_id")
+        );
         review.setUseful(useful);
         return review;
     }
@@ -75,8 +70,8 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     private Integer useful(Integer id) {
-        String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID =" + id;
-        Integer useful = jdbcTemplate.queryForObject(sql, Integer.class);
+        String sql = "SELECT SUM (LIKE_TYPE) from REVIEW_LIKE Where REVIEW_ID = ?";
+        Integer useful = jdbcTemplate.queryForObject(sql, Integer.class, id);
         if (useful != null) {
             return useful;
         } else return 0;
@@ -92,9 +87,7 @@ public class ReviewDbStorage implements ReviewStorage {
                     reviewRows.getString("content"),
                     reviewRows.getBoolean("is_positive"),
                     reviewRows.getInt("user_id"),
-                    reviewRows.getInt("film_id"),
-                    useful);
-
+                    reviewRows.getInt("film_id"));
             log.info("Найден отзыв: {}", review.getReviewId());
             review.setUseful(useful);
             return Optional.of(review);
@@ -110,7 +103,6 @@ public class ReviewDbStorage implements ReviewStorage {
                 " VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery, reviewId, userID, value);
     }
-
 
     @Override
     public void deleteReviewLikeDislike(Integer reviewId, Integer userID) {
