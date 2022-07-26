@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.EventOperations;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.Event.EventDao;
+import ru.yandex.practicum.filmorate.storage.Event.EventStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class ReviewDbStorage implements ReviewStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final EventDao eventDao;
+    private final EventStorage eventStorage;
 
     private Review makeReview(ResultSet rs) throws SQLException {
         Integer useful = useful(rs.getInt("review_id"));
@@ -56,7 +56,7 @@ public class ReviewDbStorage implements ReviewStorage {
                     review.getUserId(), review.getFilmId());
             setID(review);
             log.debug("added: {}", review);
-            eventDao.add(review.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.ADD);
+            eventStorage.add(review.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.ADD);
             return review;
         }
     }
@@ -65,17 +65,14 @@ public class ReviewDbStorage implements ReviewStorage {
     public Review updateReview(Review review) {
         String sqlQuery = "update REVIEWS set CONTENT = ?, IS_POSITIVE = ? where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
-
-        eventDao.add(review.getReviewId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE);
-        //  eventDao.add(review.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE); //это должен быть правильный вариант
+        eventStorage.add(review.getReviewId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE);
         return getReview(review.getReviewId()).orElse(null);
     }
 
     @Override
     public void deleteReview(Integer reviewId) {
         Optional<Review> review = getReview(reviewId);
-        eventDao.add(review.get().getUserId(), review.get().getReviewId(), EventType.REVIEW, EventOperations.REMOVE);
-
+        eventStorage.add(review.get().getUserId(), review.get().getReviewId(), EventType.REVIEW, EventOperations.REMOVE);
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, reviewId);
     }

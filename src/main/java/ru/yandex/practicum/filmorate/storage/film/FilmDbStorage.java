@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.*;
-import ru.yandex.practicum.filmorate.storage.Event.EventDao;
+import ru.yandex.practicum.filmorate.storage.Event.EventStorage;
 import ru.yandex.practicum.filmorate.storage.Genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MPA.MPAStorage;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     private final MPAStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final DirectorStorage directorStorage;
-    private final EventDao eventDao;
+    private final EventStorage eventStorage;
 
     @Override
     public Collection<Film> findAll() {
@@ -143,14 +143,14 @@ public class FilmDbStorage implements FilmStorage {
     public void createLike(Integer filmID, Integer userID) {
         String sqlQuery = "insert into FILM_LIKES(FILM_ID, USER_ID) values (?, ?)";
         jdbcTemplate.update(sqlQuery, filmID, userID);
-        eventDao.add(userID, filmID, EventType.LIKE, EventOperations.ADD);
+        eventStorage.add(userID, filmID, EventType.LIKE, EventOperations.ADD);
     }
 
     @Override
     public void removeLike(Integer filmID, Integer userID) {
         String sqlQuery = "DELETE FROM FILM_LIKES WHERE FILM_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(sqlQuery, filmID, userID);
-        eventDao.add(userID, filmID, EventType.LIKE, EventOperations.REMOVE);
+        eventStorage.add(userID, filmID, EventType.LIKE, EventOperations.REMOVE);
     }
 
     @Override

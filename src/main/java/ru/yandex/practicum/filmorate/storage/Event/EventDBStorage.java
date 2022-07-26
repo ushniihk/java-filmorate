@@ -14,11 +14,11 @@ import java.util.Collection;
 
 @Slf4j
 @Repository
-public class EventDaoImpl implements EventDao {
+public class EventDBStorage implements EventStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public EventDaoImpl(JdbcTemplate jdbcTemplate) {
+    public EventDBStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

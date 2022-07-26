@@ -13,7 +13,7 @@ import ru.yandex.practicum.filmorate.model.EventOperations;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.Event.EventDao;
+import ru.yandex.practicum.filmorate.storage.Event.EventStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.Date;
@@ -22,15 +22,14 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
-
-@Repository
 @Slf4j
+@Repository
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmStorage filmStorage;
-    private final EventDao eventDao;
+    private final EventStorage eventStorage;
 
     @Override
     public Collection<User> findAll() {
@@ -142,14 +141,14 @@ public class UserDbStorage implements UserStorage {
     public void addFriend(Integer id, Integer friendId) {
         String sqlQuery2 = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID, FRIENDSHIP) VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery2, id, friendId, 1);
-        eventDao.add(id, friendId, EventType.FRIEND, EventOperations.ADD);
+        eventStorage.add(id, friendId, EventType.FRIEND, EventOperations.ADD);
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
         String sqlQuery2 = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sqlQuery2, id, friendId);
-        eventDao.add(id, friendId, EventType.FRIEND, EventOperations.REMOVE);
+        eventStorage.add(id, friendId, EventType.FRIEND, EventOperations.REMOVE);
     }
 
     @Override
@@ -232,5 +231,4 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
     }
-
 }
