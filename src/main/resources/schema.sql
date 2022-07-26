@@ -10,6 +10,7 @@ Drop table IF EXISTS USERS cascade;
 Drop table IF EXISTS DIRECTORS cascade;
 Drop table IF EXISTS REVIEWS cascade;
 Drop table IF EXISTS REVIEW_LIKE cascade;
+Drop table IF EXISTS EVENTS cascade;
 
 CREATE TABLE IF NOT EXISTS rating_mpa
 (
@@ -84,13 +85,24 @@ CREATE TABLE IF NOT EXISTS FILMS_DIRECTORS
     primary key (film_id, director_id)
 );
 
+CREATE TABLE IF NOT EXISTS EVENTS
+(
+    EVENT_ID        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    USER_ID         BIGINT      NOT NULL,
+    EVENT_TYPE      VARCHAR(10) NOT NULL,
+    EVENT_OPERATION VARCHAR(10) NOT NULL,
+    TIME_STAMP      BIGINT      NOT NULL,
+    ENTITY_ID       BIGINT      NOT NULL,
+    FOREIGN KEY (USER_ID) REFERENCES USERS (USER_ID) ON DELETE CASCADE
+);
+
 create table IF NOT EXISTS REVIEWS
 (
     REVIEW_ID   INTEGER auto_increment,
     CONTENT     CHARACTER VARYING(500) not null,
-    IS_POSITIVE BOOLEAN                not null,
-    USER_ID     INTEGER                not null,
-    FILM_ID     INTEGER                not null,
+    IS_POSITIVE BOOLEAN not null,
+    USER_ID     INTEGER not null,
+    FILM_ID     INTEGER not null,
     primary key (REVIEW_ID),
     foreign key (FILM_ID) references FILMS (FILM_ID) on delete cascade,
     foreign key (USER_ID) references USERS (USER_ID) on delete cascade
@@ -105,3 +117,6 @@ create table IF NOT EXISTS REVIEW_LIKE
     foreign key (REVIEW_ID) references REVIEWS (REVIEW_ID) on delete cascade,
     foreign key (USER_ID) references USERS (USER_ID) on delete cascade
 );
+
+
+
