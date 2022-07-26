@@ -65,7 +65,8 @@ public class ReviewDbStorage implements ReviewStorage {
     public Review updateReview(Review review) {
         String sqlQuery = "update REVIEWS set CONTENT = ?, IS_POSITIVE = ? where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
-        eventStorage.add(review.getReviewId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE);
+        Review review1 = getReview(review.getReviewId()).orElseThrow();
+        eventStorage.add(review1.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE);
         return getReview(review.getReviewId()).orElse(null);
     }
 
