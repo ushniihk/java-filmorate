@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exceptions.CreatingException;
@@ -29,7 +27,7 @@ public class ReviewService {
 
     private enum LikeValue {
         LIKE(1), DISLIKE(-1);
-        private Integer dbView;
+        private final Integer dbView;
 
         LikeValue(Integer dbView) {
             this.dbView = dbView;
