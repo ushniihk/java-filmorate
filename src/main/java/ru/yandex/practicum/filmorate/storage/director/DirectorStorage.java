@@ -28,4 +28,6 @@ public interface DirectorStorage {
 
     void delete(Integer directorID);
 
+    Collection<Integer> findAllId();
+
 }

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.sql.ResultSet;
@@ -26,7 +27,7 @@ public interface FilmStorage {
 
     Film make(ResultSet rs) throws SQLException;
 
-    Collection<Film> findByDirector(Integer directorID, String sortBy) throws NotFoundParameterException;
+    Collection<Film> findByDirector(Director director, String sortBy) throws NotFoundParameterException;
 
     Collection<Film> getCommon(Integer userId, Integer friendId);
 

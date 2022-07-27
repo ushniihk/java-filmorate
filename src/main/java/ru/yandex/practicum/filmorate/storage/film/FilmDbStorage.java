@@ -154,9 +154,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
-        Director director = new Director(directorID, "TEST");
-        if (!directorStorage.findAll().contains(director)) {
+    public Collection<Film> findByDirector(Director director, String sortBy) throws NotFoundParameterException {
+        if (!directorStorage.findAllId().contains(director.getId())) {
             throw new NotFoundParameterException("BAD directorID");
         }
         String sort = "f.RELEASEDATE";
@@ -165,7 +164,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
                 "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort;
-        return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs), directorID);
+        return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs), director.getId());
     }
 
     @Override
@@ -304,4 +303,5 @@ public class FilmDbStorage implements FilmStorage {
                 film.setId(f.getId());
         }
     }
+
 }

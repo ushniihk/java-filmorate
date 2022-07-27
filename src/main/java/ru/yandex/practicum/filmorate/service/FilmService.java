@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -23,6 +24,7 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final DirectorStorage directorStorage;
 
     public void addLike(Integer id, Integer userId) throws NotFoundParameterException {
         if (checkID(id))
@@ -92,7 +94,7 @@ public class FilmService {
     public Collection<Film> findByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
         if (checkID(directorID))
             throw new NotFoundParameterException("bad id");
-        return filmStorage.findByDirector(directorID, sortBy);
+        return filmStorage.findByDirector(directorStorage.get(directorID), sortBy);
     }
 
     private boolean checkID(Integer id) {

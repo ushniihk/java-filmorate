@@ -80,6 +80,13 @@ public class DirectorDbStorage implements DirectorStorage {
         jdbcTemplate.update(sqlQuery, directorID);
     }
 
+    @Override
+    public Collection<Integer> findAllId(){
+        String sql = "SELECT DIRECTOR_ID FROM DIRECTORS";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("DIRECTOR_ID"));
+    }
+
+
     private Integer setID() {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT COUNT(DIRECTOR_ID) AS ID FROM DIRECTORS ");
         if (userRows.next()) {
