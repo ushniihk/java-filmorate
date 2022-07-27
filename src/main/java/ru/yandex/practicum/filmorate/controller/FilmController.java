@@ -35,8 +35,8 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findFilm(@PathVariable Integer id) throws NotFoundParameterException {
-        return filmService.getFilm(id);
+    public Film get(@PathVariable Integer id) throws NotFoundParameterException {
+        return filmService.get(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -50,23 +50,23 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count, @RequestParam(required = false) Integer genreId, @RequestParam(required = false) String year) throws IncorrectParameterException {
-        return filmService.getPopularFilmsByParams(count, genreId, year);
+    public Collection<Film> getTop(@RequestParam(defaultValue = "10") Integer count, @RequestParam(required = false) Integer genreId, @RequestParam(required = false) String year) throws IncorrectParameterException {
+        return filmService.getPopularByParams(count, genreId, year);
     }
 
     @GetMapping("/director/{directorId}")
-    public Collection<Film> getDirectorsFilms(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
-        return filmService.findFilmsByDirector(directorId, sortBy);
+    public Collection<Film> getDirectors(@PathVariable Integer directorId, @RequestParam String sortBy) throws NotFoundParameterException {
+        return filmService.findByDirector(directorId, sortBy);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilm(@PathVariable("id") int filmId) throws NotFoundParameterException {
-        filmService.deleteFilm(filmId);
+    public void delete(@PathVariable("id") int filmId) throws NotFoundParameterException {
+        filmService.delete(filmId);
     }
 
     @GetMapping("/common")
-    public Collection<Film> getCommonFilms(@RequestParam Integer userId, @RequestParam Integer friendId) throws NotFoundParameterException {
-        return filmService.getCommonFilms(userId, friendId);
+    public Collection<Film> getCommon(@RequestParam Integer userId, @RequestParam Integer friendId) throws NotFoundParameterException {
+        return filmService.getCommon(userId, friendId);
     }
 
     @GetMapping("/search")

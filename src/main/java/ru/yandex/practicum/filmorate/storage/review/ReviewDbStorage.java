@@ -25,7 +25,7 @@ public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
     private final EventStorage eventStorage;
 
-    private Review makeReview(ResultSet rs) throws SQLException {
+    private Review make(ResultSet rs) throws SQLException {
         Integer useful = useful(rs.getInt("review_id"));
         Review review = new Review(
                 rs.getInt("review_id"),
@@ -41,38 +41,33 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Collection<Review> findAll() {
         String sql = "SELECT * FROM REVIEWS";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs));
+        return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs));
     }
 
     @Override
-    public Review createReview(Review review) throws ValidationException {
-        if (findAll().contains(review)) {
-            log.debug("Oh, no. validation failed");
-            throw new ValidationException("oh, something was wrong");
-        } else {
-            String sqlQuery = "INSERT INTO REVIEWS (CONTENT, IS_POSITIVE, USER_ID, FILM_ID)" +
-                    " VALUES (?, ?, ?, ?)";
-            jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(),
-                    review.getUserId(), review.getFilmId());
-            setID(review);
-            log.debug("added: {}", review);
-            eventStorage.add(review.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.ADD);
-            return review;
-        }
+    public Review create(Review review) throws ValidationException {
+        String sqlQuery = "INSERT INTO REVIEWS (CONTENT, IS_POSITIVE, USER_ID, FILM_ID)" +
+                " VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(),
+                review.getUserId(), review.getFilmId());
+        setID(review);
+        log.debug("added: {}", review);
+        eventStorage.add(review.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.ADD);
+        return review;
     }
 
     @Override
-    public Review updateReview(Review review) {
+    public Review update(Review review) {
         String sqlQuery = "update REVIEWS set CONTENT = ?, IS_POSITIVE = ? where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getContent(), review.getIsPositive(), review.getReviewId());
-        Review review1 = getReview(review.getReviewId()).orElseThrow();
+        Review review1 = get(review.getReviewId()).orElseThrow();
         eventStorage.add(review1.getUserId(), review.getReviewId(), EventType.REVIEW, EventOperations.UPDATE);
-        return getReview(review.getReviewId()).orElse(null);
+        return get(review.getReviewId()).orElse(null);
     }
 
     @Override
-    public void deleteReview(Integer reviewId) {
-        Optional<Review> review = getReview(reviewId);
+    public void delete(Integer reviewId) {
+        Optional<Review> review = get(reviewId);
         review.ifPresent(value -> eventStorage.add(value.getUserId(), value.getReviewId(), EventType.REVIEW, EventOperations.REMOVE));
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, reviewId);
@@ -87,7 +82,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Optional<Review> getReview(Integer id) {
+    public Optional<Review> get(Integer id) {
         SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEWS WHERE REVIEW_ID = ?", id);
         Integer useful = useful(id);
         if (reviewRows.next()) {
@@ -107,14 +102,14 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void createReviewLikeDislike(Integer reviewId, Integer userID, Integer value) {
+    public void createLikeDislike(Integer reviewId, Integer userID, Integer value) {
         String sqlQuery = "INSERT INTO REVIEW_LIKE (REVIEW_ID, USER_ID, LIKE_TYPE)" +
                 " VALUES (?, ?, ?)";
         jdbcTemplate.update(sqlQuery, reviewId, userID, value);
     }
 
     @Override
-    public void deleteReviewLikeDislike(Integer reviewId, Integer userID) {
+    public void deleteLikeDislike(Integer reviewId, Integer userID) {
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID =? AND USER_ID= ?";
         jdbcTemplate.update(sqlQuery, reviewId);
     }

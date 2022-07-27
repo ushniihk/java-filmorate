@@ -17,9 +17,9 @@ public interface UserStorage {
 
     User update(User user) throws UpdateException;
 
-    boolean deleteUser(Integer userId);
+    boolean delete(Integer userId);
 
-    Optional<User> getUser(Integer id) throws NotFoundParameterException;
+    Optional<User> get(Integer id) throws NotFoundParameterException;
 
     Collection<User> showAllFriends(Integer id) throws NotFoundParameterException;
 
@@ -31,10 +31,10 @@ public interface UserStorage {
 
     Collection<Film> getFilmsByRecommendations(int id) throws NotFoundParameterException;
 
-    Map<Integer, Collection<Integer>> getUsersAndLikes();
-
-    int getUserIdWithCommonLikes(int id);
+    int getIdWithCommonLikes(int id);
 
     Collection<Integer> getFilmsIdByRecommendations(int id);
+
+    Collection<Integer> getLikedFilms(Integer id);
 }
 

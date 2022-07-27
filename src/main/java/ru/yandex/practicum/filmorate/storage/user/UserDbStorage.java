@@ -34,7 +34,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> findAll() {
         String sql = "SELECT * FROM USERS";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs));
+        return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean deleteUser(Integer userId) {
+    public boolean delete(Integer userId) {
         String sqlQuery = "DELETE FROM users WHERE user_id = ?";
         int rowsAffected = jdbcTemplate.update(sqlQuery, userId);
         return rowsAffected != 0;
@@ -95,7 +95,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> getUser(Integer id) {
+    public Optional<User> get(Integer id) {
 
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE USER_ID = ?", id);
 
@@ -104,7 +104,7 @@ public class UserDbStorage implements UserStorage {
                     userRows.getInt("USER_ID"),
                     userRows.getString("email"),
                     userRows.getString("login"),
-                    getFriendsByUser(id),
+                    getFriends(id),
                     userRows.getString("name"),
                     userRows.getDate("birthday")
             );
@@ -119,10 +119,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> showAllFriends(Integer id) throws NotFoundParameterException {
         Collection<User> users = new ArrayList<>();
-        if (getUser(id).isPresent()) {
-            for (Integer user_id : getUser(id).get().getFriends()) {
-                if (getUser(user_id).isPresent())
-                    users.add(getUser(user_id).get());
+        if (get(id).isPresent()) {
+            for (Integer user_id : get(id).get().getFriends()) {
+                if (get(user_id).isPresent())
+                    users.add(get(user_id).get());
             }
         } else {
             throw new NotFoundParameterException("bad id");
@@ -134,7 +134,7 @@ public class UserDbStorage implements UserStorage {
     public Collection<User> showCommonFriends(Integer id, Integer otherId) {
         String sql = "SELECT * FROM users WHERE user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) " +
                 "AND user_id IN (SELECT friend_id FROM friends WHERE user_id = ?) ORDER BY USER_ID;";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs), id, otherId);
+        return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs), id, otherId);
     }
 
     @Override
@@ -152,22 +152,13 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Map<Integer, Collection<Integer>> getUsersAndLikes() {
-        Map<Integer, Collection<Integer>> usersLikes = new HashMap<>();
-        for (User user : findAll()) {
-            usersLikes.put(user.getId(), getLikedFilmsByUser(user.getId()));
-        }
-        return usersLikes;
-    }
-
-    @Override
-    public int getUserIdWithCommonLikes(int id) {
-        Collection<Integer> usersLikes = getUsersAndLikes().get(id);
+    public int getIdWithCommonLikes(int id) {
+        Collection<Integer> usersLikes = getLikedFilms(id);
         long count = 0;
         int userID = -1;
-        for (Integer i : getUsersAndLikes().keySet()) {
+        for (Integer i : getAllID()) {
             if (id != i) {
-                long l = getUsersAndLikes().get(i).stream().filter(usersLikes::contains).count();
+                long l = getLikedFilms(i).stream().filter(usersLikes::contains).count();
                 if (l > count) {
                     count = l;
                     userID = i;
@@ -179,8 +170,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<Integer> getFilmsIdByRecommendations(int id) {
-        Collection<Integer> films = getUsersAndLikes().get(getUserIdWithCommonLikes(id));
-        films.removeAll(getUsersAndLikes().get(id));
+        Collection<Integer> films = getLikedFilms(getIdWithCommonLikes(id));
+        films.removeAll(getLikedFilms(id));
         return films;
     }
 
@@ -188,13 +179,19 @@ public class UserDbStorage implements UserStorage {
     public Collection<Film> getFilmsByRecommendations(int id) throws NotFoundParameterException {
         Collection<Film> recommendations = new ArrayList<>();
         for (Integer i : getFilmsIdByRecommendations(id)) {
-            Optional<Film> film = filmStorage.getFilm(i);
+            Optional<Film> film = filmStorage.get(i);
             film.ifPresent(recommendations::add);
         }
         return recommendations;
     }
 
-    private Collection<Integer> getFriendsByUser(Integer id) {
+    @Override
+    public Collection<Integer> getLikedFilms(Integer id) {
+        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
+    }
+
+    private Collection<Integer> getFriends(Integer id) {
         String sql = "SELECT friend_id FROM FRIENDS WHERE USER_ID = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFriends(rs), id);
     }
@@ -203,12 +200,12 @@ public class UserDbStorage implements UserStorage {
         return rs.getInt("friend_id");
     }
 
-    private User makeUser(ResultSet rs) throws SQLException {
+    private User make(ResultSet rs) throws SQLException {
         return new User(
                 rs.getInt("USER_ID"),
                 rs.getString("email"),
                 rs.getString("login"),
-                getFriendsByUser(rs.getInt("USER_ID")),
+                getFriends(rs.getInt("USER_ID")),
                 rs.getString("name"),
                 rs.getDate("birthday"));
     }
@@ -227,8 +224,8 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    private Collection<Integer> getLikedFilmsByUser(Integer id) {
-        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
+    private Collection<Integer> getAllID() {
+        String sql = "SELECT USER_ID FROM USERS";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("USER_ID"));
     }
 }

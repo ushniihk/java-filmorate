@@ -20,24 +20,24 @@ public class GenreDbStorageTest {
 
     @Test
     public void shouldFindGenreById() {
-        assertEquals(genreDbStorage.getGenre(1).getName(), "Комедия");
-        assertEquals(genreDbStorage.getGenre(2).getName(), "Драма");
-        assertEquals(genreDbStorage.getGenre(3).getName(), "Мультфильм");
+        assertEquals(genreDbStorage.get(1).getName(), "Комедия");
+        assertEquals(genreDbStorage.get(2).getName(), "Драма");
+        assertEquals(genreDbStorage.get(3).getName(), "Мультфильм");
     }
 
     @Test
     public void shouldFindAllGenres() {
-        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.getGenre(1)));
-        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.getGenre(2)));
-        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.getGenre(3)));
+        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.get(1)));
+        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.get(2)));
+        assertTrue(genreDbStorage.findAll().contains(genreDbStorage.get(3)));
     }
 
     @Test
     public void shouldCreateAndDeleteGenre() {
-        genreDbStorage.createGenre(1, 1);
-        assertTrue(filmDbStorage.getFilm(1).get().getGenres().contains(genreDbStorage.getGenre(1)));
-        genreDbStorage.removeGenre(1);
-        assertFalse(filmDbStorage.getFilm(1).get().getGenres().contains(genreDbStorage.getGenre(1)));
+        genreDbStorage.create(1, 1);
+        assertTrue(filmDbStorage.get(1).get().getGenres().contains(genreDbStorage.get(1)));
+        genreDbStorage.remove(1);
+        assertFalse(filmDbStorage.get(1).get().getGenres().contains(genreDbStorage.get(1)));
     }
 
 

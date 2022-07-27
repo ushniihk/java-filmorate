@@ -40,8 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id) throws NotFoundParameterException {
-        return userService.getUser(id);
+    public User get(@PathVariable Integer id) throws NotFoundParameterException {
+        return userService.get(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
@@ -65,8 +65,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") int userId) throws NotFoundParameterException {
-        userService.deleteUser(userId);
+    public void delete(@PathVariable("id") int userId) throws NotFoundParameterException {
+        userService.delete(userId);
     }
 
     @GetMapping("/{id}/recommendations")
@@ -76,6 +76,6 @@ public class UserController {
 
     @GetMapping("/{id}/feed")
     public Collection<Event> getEvents(@PathVariable("id") Integer id) throws NotFoundParameterException {
-        return eventService.getEvents(id);
+        return eventService.get(id);
     }
 }

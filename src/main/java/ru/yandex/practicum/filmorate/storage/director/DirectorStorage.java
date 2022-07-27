@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.director;
 
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.model.Film;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,20 +12,20 @@ public interface DirectorStorage {
 
     Collection<Director> findAll();
 
-    Director getDirector(Integer id) throws NotFoundParameterException;
+    Director get(Integer id) throws NotFoundParameterException;
 
-    void addDirector(Integer ID, Integer filmID);
+    void addToFilm(Director director, Film film);
 
-    void removeDirector(Integer directorID);
+    void remove(Integer directorID);
 
-    Collection<Director> getDirectors(Integer id);
+    Collection<Director> getByFilm(Integer id);
 
-    Director makeDirectors(ResultSet rs) throws SQLException;
+    Director make(ResultSet rs) throws SQLException;
 
-    Director updateDirector(Director director);
+    Director update(Director director);
 
-    Director createDirector(Director director);
+    Director create(Director director);
 
-    void deleteDirector(Integer directorID);
+    void delete(Integer directorID);
 
 }

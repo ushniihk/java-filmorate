@@ -28,7 +28,7 @@ public class EventDBStorage implements EventStorage {
                 "FROM events " +
                 "JOIN users ON events.user_id = users.user_id " +
                 "WHERE users.user_id  = ?";
-        return jdbcTemplate.query(row, (rs, rowNum) -> makeEvent(rs), id);
+        return jdbcTemplate.query(row, (rs, rowNum) -> make(rs), id);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class EventDBStorage implements EventStorage {
         jdbcTemplate.update(query, userId, eventType.toString(), operation.toString(), Instant.now().toEpochMilli(), entityId);
     }
 
-    private Event makeEvent(ResultSet rs) throws SQLException {
+    private Event make(ResultSet rs) throws SQLException {
         return new Event(
                 rs.getLong("time_stamp"),
                 rs.getInt("user_id"),

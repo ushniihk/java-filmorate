@@ -35,12 +35,12 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director getDirector(@PathVariable Integer id) throws NotFoundParameterException {
-        return directorService.getDirector(id);
+    public Director get(@PathVariable Integer id) throws NotFoundParameterException {
+        return directorService.get(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDirector(@PathVariable Integer id) {
-        directorService.deleteDirector(id);
+    public void delete(@PathVariable Integer id) {
+        directorService.delete(id);
     }
 }

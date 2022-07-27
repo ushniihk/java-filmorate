@@ -55,6 +55,6 @@ public class Film {
 
     public void setNullDirectors(Collection<Director> directors) {
         if (directors.size() == 0)
-        this.directors = null;
+            this.directors = null;
     }
 }

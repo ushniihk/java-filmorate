@@ -25,16 +25,16 @@ public class FilmDbStorageTest {
 
     @Test
     public void shouldFindFilmById() {
-        assertEquals(filmStorage.getFilm(2).get().getName(), "matrix2");
-        assertEquals(filmStorage.getFilm(3).get().getId(), 3);
-        assertEquals(filmStorage.getFilm(1).get().getDuration(), 100);
+        assertEquals(filmStorage.get(2).get().getName(), "matrix2");
+        assertEquals(filmStorage.get(3).get().getId(), 3);
+        assertEquals(filmStorage.get(1).get().getDuration(), 100);
     }
 
     @Test
     public void shouldFindAllFilms() {
-        assertTrue(filmStorage.findAll().contains(filmStorage.getFilm(2).get()));
-        assertTrue(filmStorage.findAll().contains(filmStorage.getFilm(1).get()));
-        assertTrue(filmStorage.findAll().contains(filmStorage.getFilm(3).get()));
+        assertTrue(filmStorage.findAll().contains(filmStorage.get(2).get()));
+        assertTrue(filmStorage.findAll().contains(filmStorage.get(1).get()));
+        assertTrue(filmStorage.findAll().contains(filmStorage.get(3).get()));
     }
 
     @Test
@@ -51,11 +51,11 @@ public class FilmDbStorageTest {
 
     @Test
     public void shouldAddLikeAndDelete() {
-        assertEquals(filmStorage.getFilm(3).get().getLikes().size(), 0);
+        assertEquals(filmStorage.get(3).get().getLikes().size(), 0);
         filmStorage.createLike(3, 1);
-        assertEquals(filmStorage.getFilm(3).get().getLikes().size(), 1);
+        assertEquals(filmStorage.get(3).get().getLikes().size(), 1);
         filmStorage.removeLike(3, 1);
-        assertEquals(filmStorage.getFilm(3).get().getLikes().size(), 0);
+        assertEquals(filmStorage.get(3).get().getLikes().size(), 0);
 
     }
 

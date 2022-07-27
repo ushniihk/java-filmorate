@@ -12,16 +12,16 @@ public interface ReviewStorage {
 
     Collection<Review> findAll();
 
-    Review createReview(Review review) throws CreatingException, ValidationException, NotFoundParameterException;
+    Review create(Review review) throws CreatingException, ValidationException, NotFoundParameterException;
 
-    Review updateReview(Review review) throws NotFoundParameterException;
+    Review update(Review review) throws NotFoundParameterException;
 
-    void deleteReview(Integer reviewId);
+    void delete(Integer reviewId);
 
-    Optional<Review> getReview(Integer id) throws NotFoundParameterException;
+    Optional<Review> get(Integer id) throws NotFoundParameterException;
 
-    void createReviewLikeDislike(Integer reviewId, Integer userID, Integer value);
+    void createLikeDislike(Integer reviewId, Integer userID, Integer value);
 
-    void deleteReviewLikeDislike(Integer reviewId, Integer userID);
+    void deleteLikeDislike(Integer reviewId, Integer userID);
 
 }

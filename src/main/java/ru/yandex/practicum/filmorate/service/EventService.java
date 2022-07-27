@@ -18,8 +18,8 @@ public class EventService {
     private final EventStorage eventStorage;
     private final UserStorage userStorage;
 
-    public Collection<Event> getEvents(Integer userId) throws NotFoundParameterException {
-        userStorage.getUser(userId);
+    public Collection<Event> get(Integer userId) throws NotFoundParameterException {
+        userStorage.get(userId);
         return eventStorage.getEvents(userId);
     }
 }

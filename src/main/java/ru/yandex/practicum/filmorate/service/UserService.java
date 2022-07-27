@@ -20,17 +20,13 @@ public class UserService {
     private final UserStorage userStorage;
 
     public void addFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException {
-        if (checkID(id))
-            throw new NotFoundParameterException("bad id");
-        if (checkID(friendId))
+        if (checkID(id) || checkID(friendId))
             throw new NotFoundParameterException("bad id");
         userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Integer id, Integer friendId) throws NotFoundParameterException, UpdateException {
-        if (checkID(id))
-            throw new NotFoundParameterException("bad id");
-        if (checkID(friendId))
+        if (checkID(id) || checkID(friendId))
             throw new NotFoundParameterException("bad id");
         userStorage.deleteFriend(id, friendId);
     }
@@ -47,21 +43,21 @@ public class UserService {
         return userStorage.update(user);
     }
 
-    public void deleteUser(Integer userId) throws NotFoundParameterException {
+    public void delete(Integer userId) throws NotFoundParameterException {
         if (checkID(userId)) {
             throw new NotFoundParameterException("bad id");
         }
-        boolean deleted = userStorage.deleteUser(userId);
+        boolean deleted = userStorage.delete(userId);
         if (!deleted) {
             throw new NotFoundParameterException("No User With Such Id");
         }
-        userStorage.deleteUser(userId);
+        userStorage.delete(userId);
     }
 
-    public User getUser(Integer id) throws NotFoundParameterException {
+    public User get(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return userStorage.getUser(id).orElseThrow(() -> new NotFoundParameterException("No User With Such Id"));
+        return userStorage.get(id).orElseThrow(() -> new NotFoundParameterException("No User With Such Id"));
     }
 
     public Collection<User> showAllFriends(Integer id) throws NotFoundParameterException {
@@ -71,9 +67,7 @@ public class UserService {
     }
 
     public Collection<User> showCommonFriends(Integer id, Integer otherId) throws NotFoundParameterException {
-        if (checkID(id))
-            throw new NotFoundParameterException("bad id");
-        if (checkID(otherId))
+        if (checkID(id) || checkID(otherId))
             throw new NotFoundParameterException("bad id");
         return userStorage.showCommonFriends(id, otherId);
     }
@@ -81,14 +75,25 @@ public class UserService {
     public Collection<Film> getFilmsByRecommendations(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        if (userStorage.getUsersAndLikes().get(id).size() == 0 || userStorage.getUserIdWithCommonLikes(id) == -1 ||
-                userStorage.getFilmsIdByRecommendations(id).size() == 0)
+        if (!hasLike(id) || !hasCommonLikes(id) || !hasFilmsByRecommendations(id))
             return new ArrayList<>();
         return userStorage.getFilmsByRecommendations(id);
     }
 
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
+    }
+
+    private boolean hasLike(Integer id) {
+        return userStorage.getLikedFilms(id).size() == 0;
+    }
+
+    private boolean hasCommonLikes(Integer id) {
+        return userStorage.getIdWithCommonLikes(id) == -1;
+    }
+
+    private boolean hasFilmsByRecommendations(Integer id) {
+        return userStorage.getFilmsIdByRecommendations(id).size() == 0;
     }
 
 }

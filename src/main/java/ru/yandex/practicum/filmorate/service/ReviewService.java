@@ -38,31 +38,31 @@ public class ReviewService {
         }
     }
 
-    public Review createReview(Review review) throws CreatingException, NotFoundParameterException, ValidationException {
-        if (checkRawReview(review)) {
+    public Review create(Review review) throws CreatingException, NotFoundParameterException, ValidationException {
+        if (checkRaw(review)) {
             throw new NotFoundParameterException("Bad id or content");
         } else if (review.getIsPositive() == null) {
             throw new CreatingException("Bad type or no type");
         }
-        return reviewStorage.createReview(review);
+        return reviewStorage.create(review);
     }
 
-    public Review updateReview(Review review) throws NotFoundParameterException, ValidationException, CreatingException {
-        if (checkRawReview(review)) {
+    public Review update(Review review) throws NotFoundParameterException, ValidationException, CreatingException {
+        if (checkRaw(review)) {
             throw new NotFoundParameterException("Bad id or content");
         } else if (!reviewStorage.findAll().contains(review)) {
-            return reviewStorage.updateReview(review);
+            return reviewStorage.update(review);
         } else {
-            return reviewStorage.createReview(review);
+            return reviewStorage.create(review);
         }
     }
 
-    public void deleteReview(@PathVariable Integer id) {
-        reviewStorage.deleteReview(id);
+    public void delete(@PathVariable Integer id) {
+        reviewStorage.delete(id);
     }
 
-    public Review getReview(@PathVariable Integer id) throws NotFoundParameterException {
-        return reviewStorage.getReview(id).orElseThrow(() -> new NotFoundParameterException("No review with such id"));
+    public Review get(@PathVariable Integer id) throws NotFoundParameterException {
+        return reviewStorage.get(id).orElseThrow(() -> new NotFoundParameterException("No review with such id"));
     }
 
     public Collection<Review> findAll() {
@@ -71,7 +71,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<Review> getTopReviewsByUseful(Collection<Review> reviews, Integer filmId, Integer count) throws IncorrectParameterException {
+    public Collection<Review> getTopByUseful(Collection<Review> reviews, Integer filmId, Integer count) throws IncorrectParameterException {
         if (count <= 0) throw new IncorrectParameterException("Bad count");
         return reviews.stream()
                 .sorted(Comparator.comparingInt(r -> r.getFilmId() * (-1)))
@@ -84,40 +84,40 @@ public class ReviewService {
         return (id == null || id < 0);
     }
 
-    private boolean checkRawReview(Review review) {
+    private boolean checkRaw(Review review) {
         return review.getContent().isBlank() || review.getFilmId() < 0 || review.getUserId() < 0;
     }
 
-    public void createReviewLike(Integer reviewId, Integer userId) throws NotFoundParameterException {
+    public void createLike(Integer reviewId, Integer userId) throws NotFoundParameterException {
         if (checkID(reviewId) && checkID(userId)) throw new NotFoundParameterException("bad id");
 
-        Optional<Review> review = reviewStorage.getReview(reviewId);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Review> review = reviewStorage.get(reviewId);
+        Optional<User> user = userStorage.get(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            reviewStorage.createReviewLikeDislike(reviewId, userId, LikeValue.LIKE.getDbView());
+            reviewStorage.createLikeDislike(reviewId, userId, LikeValue.LIKE.getDbView());
         } else throw new NotFoundParameterException("bad id");
     }
 
-    public void createReviewDislike(Integer reviewId, Integer userId) throws NotFoundParameterException {
+    public void createDislike(Integer reviewId, Integer userId) throws NotFoundParameterException {
         if (checkID(reviewId) && checkID(userId)) throw new NotFoundParameterException("bad id");
 
-        Optional<Review> review = reviewStorage.getReview(reviewId);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Review> review = reviewStorage.get(reviewId);
+        Optional<User> user = userStorage.get(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            reviewStorage.createReviewLikeDislike(reviewId, userId, LikeValue.DISLIKE.getDbView());
+            reviewStorage.createLikeDislike(reviewId, userId, LikeValue.DISLIKE.getDbView());
         } else throw new NotFoundParameterException("bad id");
     }
 
-    public void deleteReviewLikeDislike(Integer reviewId, Integer userId) throws NotFoundParameterException {
+    public void deleteLikeDislike(Integer reviewId, Integer userId) throws NotFoundParameterException {
         if (checkID(reviewId) && checkID(userId)) throw new NotFoundParameterException("bad id");
 
-        Optional<Review> review = reviewStorage.getReview(reviewId);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Review> review = reviewStorage.get(reviewId);
+        Optional<User> user = userStorage.get(userId);
 
         if (review.isPresent() && user.isPresent()) {
-            reviewStorage.deleteReviewLikeDislike(reviewId, userId);
+            reviewStorage.deleteLikeDislike(reviewId, userId);
         } else throw new NotFoundParameterException("bad id");
     }
 }

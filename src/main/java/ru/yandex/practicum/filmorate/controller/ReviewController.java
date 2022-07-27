@@ -20,53 +20,53 @@ public class ReviewController {
 
     @PostMapping
     public Review create(@RequestBody Review review) throws CreatingException, NotFoundParameterException, ValidationException {
-        return reviewService.createReview(review);
+        return reviewService.create(review);
     }
 
     @PutMapping
     public Review update(@RequestBody Review review) throws UpdateException, NotFoundParameterException, ValidationException, CreatingException {
-        return reviewService.updateReview(review);
+        return reviewService.update(review);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReview(@PathVariable Integer id) {
-        reviewService.deleteReview(id);
+    public void delete(@PathVariable Integer id) {
+        reviewService.delete(id);
     }
 
     @GetMapping("/{id}")
-    public Review getReview(@PathVariable Integer id) throws NotFoundParameterException {
-        return reviewService.getReview(id);
+    public Review get(@PathVariable Integer id) throws NotFoundParameterException {
+        return reviewService.get(id);
     }
 
     @GetMapping
-    public Collection<Review> getTopReviews(
+    public Collection<Review> getTop(
             @RequestParam(required = false) Integer filmId,
             @RequestParam(required = false, defaultValue = "10") Integer count) throws IncorrectParameterException {
         if (filmId == null) {
             return reviewService.findAll();
         } else {
-            return reviewService.getTopReviewsByUseful(reviewService.findAll(), filmId, count);
+            return reviewService.getTopByUseful(reviewService.findAll(), filmId, count);
         }
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void userLikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.createReviewLike(id, userId);
+        reviewService.createLike(id, userId);
     }
 
     @PutMapping("/{id}/dislike/{userId}")
     public void userDislikesTheReview(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.createReviewDislike(id, userId);
+        reviewService.createDislike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void userDeleteLike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.deleteReviewLikeDislike(id, userId);
+        reviewService.deleteLikeDislike(id, userId);
     }
 
     @DeleteMapping("/{id}/dislike/{userId}")
     public void userDeleteDislike(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        reviewService.deleteReviewLikeDislike(id, userId);
+        reviewService.deleteLikeDislike(id, userId);
     }
 
 }

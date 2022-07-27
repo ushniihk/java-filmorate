@@ -27,23 +27,22 @@ public class DirectorService {
     public Director create(Director director) throws CreatingException {
         if (director.getName().isBlank() || director.getName().isEmpty())
             throw new CreatingException("Bad name");
-        return directorStorage.createDirector(director);
+        return directorStorage.create(director);
     }
 
     public Director update(@RequestBody Director director) throws UpdateException {
         if (!directorStorage.findAll().contains(director))
             throw new UpdateException("Bad director");
-        return directorStorage.updateDirector(director);
+        return directorStorage.update(director);
     }
 
-    public Director getDirector(@PathVariable Integer id) throws NotFoundParameterException {
-        return directorStorage.getDirector(id);
+    public Director get(@PathVariable Integer id) throws NotFoundParameterException {
+        return directorStorage.get(id);
     }
 
-    public void deleteDirector(@PathVariable Integer id) {
-        directorStorage.deleteDirector(id);
+    public void delete(@PathVariable Integer id) {
+        directorStorage.delete(id);
     }
-
 
 
 }

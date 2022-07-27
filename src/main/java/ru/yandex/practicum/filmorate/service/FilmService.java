@@ -30,8 +30,8 @@ public class FilmService {
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
 
-        Optional<Film> film = filmStorage.getFilm(id);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Film> film = filmStorage.get(id);
+        Optional<User> user = userStorage.get(userId);
 
         if (film.isPresent() && user.isPresent()) {
             film.get().addLike(user.get().getId());
@@ -45,8 +45,8 @@ public class FilmService {
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
 
-        Optional<Film> film = filmStorage.getFilm(id);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Film> film = filmStorage.get(id);
+        Optional<User> user = userStorage.get(userId);
 
         if (film.isPresent() && user.isPresent()) {
             film.get().deleteLike(user.get().getId());
@@ -73,36 +73,36 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public Film getFilm(Integer id) throws NotFoundParameterException {
+    public Film get(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return filmStorage.getFilm(id).orElseThrow(() -> new NotFoundParameterException("No Film With Such Id"));
+        return filmStorage.get(id).orElseThrow(() -> new NotFoundParameterException("No Film With Such Id"));
     }
 
-    public void deleteFilm(int filmId) throws NotFoundParameterException {
+    public void delete(int filmId) throws NotFoundParameterException {
         if (checkID(filmId)) {
             throw new NotFoundParameterException("bad id");
         }
-        boolean deleted = filmStorage.deleteFilm(filmId);
+        boolean deleted = filmStorage.delete(filmId);
         if (!deleted) {
             throw new NotFoundParameterException("No Film With Such Id");
         }
     }
 
-    public Collection<Film> findFilmsByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
+    public Collection<Film> findByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
         if (checkID(directorID))
             throw new NotFoundParameterException("bad id");
-        return filmStorage.findFilmsByDirector(directorID, sortBy);
+        return filmStorage.findByDirector(directorID, sortBy);
     }
 
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
     }
 
-    public Collection<Film> getCommonFilms(Integer userId, Integer friendId) throws NotFoundParameterException {
+    public Collection<Film> getCommon(Integer userId, Integer friendId) throws NotFoundParameterException {
         if (checkID(userId) || checkID(friendId))
             throw new NotFoundParameterException("bad id");
-        Collection<Film> commonFilms = filmStorage.getCommonFilms(userId, friendId);
+        Collection<Film> commonFilms = filmStorage.getCommon(userId, friendId);
         return getTopFilmsByLikes(commonFilms, commonFilms.size());
     }
 
@@ -110,12 +110,12 @@ public class FilmService {
         return filmStorage.searchAnyway(query, type);
     }
 
-    public Collection<Film> getPopularFilmsByParams(Integer limit, Integer genreId, String year) throws IncorrectParameterException {
+    public Collection<Film> getPopularByParams(Integer limit, Integer genreId, String year) throws IncorrectParameterException {
         Collection<Film> theMostPopularFilms;
         if (limit <= 0)
             throw new IncorrectParameterException("count");
         if (genreId != null || year != null) {
-            theMostPopularFilms = filmStorage.getPopularFilmsByGenreAndYear(genreId, year);
+            theMostPopularFilms = filmStorage.getPopularByGenreAndYear(genreId, year);
         } else {
             theMostPopularFilms = findAll();
         }
