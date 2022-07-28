@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -22,6 +24,7 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final DirectorStorage directorStorage;
 
     public void addLike(Integer id, Integer userId) throws NotFoundParameterException {
         if (checkID(id))
@@ -29,8 +32,8 @@ public class FilmService {
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
 
-        Optional<Film> film = filmStorage.getFilm(id);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Film> film = filmStorage.get(id);
+        Optional<User> user = userStorage.get(userId);
 
         if (film.isPresent() && user.isPresent()) {
             film.get().addLike(user.get().getId());
@@ -44,8 +47,8 @@ public class FilmService {
         if (checkID(userId))
             throw new NotFoundParameterException("bad id");
 
-        Optional<Film> film = filmStorage.getFilm(id);
-        Optional<User> user = userStorage.getUser(userId);
+        Optional<Film> film = filmStorage.get(id);
+        Optional<User> user = userStorage.get(userId);
 
         if (film.isPresent() && user.isPresent()) {
             film.get().deleteLike(user.get().getId());
@@ -53,7 +56,7 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
+    private Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
         return films.stream()
                 .sorted(Comparator.comparingInt(f -> f.getLikes().size() * (-1)))
                 .limit(count)
@@ -72,14 +75,52 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public Optional<Film> getFilm(Integer id) throws NotFoundParameterException {
+    public Film get(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return filmStorage.getFilm(id);
+        return filmStorage.get(id).orElseThrow(() -> new NotFoundParameterException("No Film With Such Id"));
+    }
+
+    public void delete(int filmId) throws NotFoundParameterException {
+        if (checkID(filmId)) {
+            throw new NotFoundParameterException("bad id");
+        }
+        boolean deleted = filmStorage.delete(filmId);
+        if (!deleted) {
+            throw new NotFoundParameterException("No Film With Such Id");
+        }
+    }
+
+    public Collection<Film> findByDirector(Integer directorID, String sortBy) throws NotFoundParameterException {
+        if (checkID(directorID))
+            throw new NotFoundParameterException("bad id");
+        return filmStorage.findByDirector(directorStorage.get(directorID), sortBy);
     }
 
     private boolean checkID(Integer id) {
         return (id == null || id < 0);
     }
 
+    public Collection<Film> getCommon(Integer userId, Integer friendId) throws NotFoundParameterException {
+        if (checkID(userId) || checkID(friendId))
+            throw new NotFoundParameterException("bad id");
+        Collection<Film> commonFilms = filmStorage.getCommon(userId, friendId);
+        return getTopFilmsByLikes(commonFilms, commonFilms.size());
+    }
+
+    public Collection<Film> search(String query, String type) {
+        return filmStorage.searchAnyway(query, type);
+    }
+
+    public Collection<Film> getPopularByParams(Integer limit, Integer genreId, String year) throws IncorrectParameterException {
+        Collection<Film> theMostPopularFilms;
+        if (limit <= 0)
+            throw new IncorrectParameterException("count");
+        if (genreId != null || year != null) {
+            theMostPopularFilms = filmStorage.getPopularByGenreAndYear(genreId, year);
+        } else {
+            theMostPopularFilms = findAll();
+        }
+        return getTopFilmsByLikes(theMostPopularFilms, limit);
+    }
 }

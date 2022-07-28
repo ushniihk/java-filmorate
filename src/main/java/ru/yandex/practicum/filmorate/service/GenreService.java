@@ -18,10 +18,10 @@ public class GenreService {
         return genreStorage.findAll();
     }
 
-    public Genre getGenre(Integer id) throws NotFoundParameterException {
+    public Genre get(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return genreStorage.getGenre(id);
+        return genreStorage.get(id);
     }
 
     private boolean checkID(Integer id) {
@@ -29,3 +29,4 @@ public class GenreService {
     }
 
 }
+

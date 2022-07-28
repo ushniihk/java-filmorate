@@ -26,7 +26,7 @@ public class MPAController {
     }
 
     @GetMapping("/{id}")
-    public MPA getMPA(@PathVariable Integer id) throws NotFoundParameterException {
-        return mpaService.getMPA(id);
+    public MPA get(@PathVariable Integer id) throws NotFoundParameterException {
+        return mpaService.get(id);
     }
 }

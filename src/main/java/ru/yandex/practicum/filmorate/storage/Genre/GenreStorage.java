@@ -7,10 +7,12 @@ import java.util.Collection;
 public interface GenreStorage {
     Collection<Genre> findAll();
 
-    Genre getGenre(Integer id);
+    Genre get(Integer id);
 
-    void createGenre(Integer ID, Integer film_id);
+    void create(Integer ID, Integer film_id);
 
-    void removeGenre(Integer genreID);
+    void remove(Integer genreID);
+
+    Collection<Genre> findByFilm(Integer filmID);
 
 }

@@ -4,11 +4,16 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.*;
+import ru.yandex.practicum.filmorate.exceptions.CreatingException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundParameterException;
+import ru.yandex.practicum.filmorate.exceptions.UpdateException;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.*;
+import java.util.Collection;
 
 @RestController
 @Slf4j
@@ -17,6 +22,7 @@ import java.util.*;
 @Component
 public class UserController {
     private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping
     public Collection<User> findAll() {
@@ -34,8 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id) throws NotFoundParameterException {
-        return userService.getUser(id);
+    public User get(@PathVariable Integer id) throws NotFoundParameterException {
+        return userService.get(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
@@ -58,4 +64,18 @@ public class UserController {
         return userService.showCommonFriends(id, otherId);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") int userId) throws NotFoundParameterException {
+        userService.delete(userId);
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public Collection<Film> getFilmsByRecommendations(@PathVariable int id) throws NotFoundParameterException {
+        return userService.getFilmsByRecommendations(id);
+    }
+
+    @GetMapping("/{id}/feed")
+    public Collection<Event> getEvents(@PathVariable("id") Integer id) throws NotFoundParameterException {
+        return eventService.get(id);
+    }
 }

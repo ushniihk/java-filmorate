@@ -25,8 +25,8 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public Genre getGenre(@PathVariable Integer id) throws NotFoundParameterException {
-        return genreService.getGenre(id);
+    public Genre get(@PathVariable Integer id) throws NotFoundParameterException {
+        return genreService.get(id);
     }
 }
 

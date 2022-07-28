@@ -25,6 +25,6 @@ public class MpaDbStorageTest {
 
     @Test
     public void shouldFindMPAById() {
-        assertEquals(mpaDbStorage.getMPA(1).getName(), "G");
+        assertEquals(mpaDbStorage.get(1).getName(), "G");
     }
 }

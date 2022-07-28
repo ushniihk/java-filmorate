@@ -26,16 +26,16 @@ public class UserDbStorageTest {
 
     @Test
     public void shouldFindUserById() throws NotFoundParameterException {
-        assertEquals(userStorage.getUser(1).get().getEmail(), "ONE@mail.ru");
-        assertEquals(userStorage.getUser(3).get().getLogin(), "third");
-        assertEquals(userStorage.getUser(2).get().getId(), 2);
+        assertEquals(userStorage.get(1).get().getEmail(), "ONE@mail.ru");
+        assertEquals(userStorage.get(3).get().getLogin(), "third");
+        assertEquals(userStorage.get(2).get().getId(), 2);
     }
 
     @Test
     public void shouldFindAllUsers() throws NotFoundParameterException {
-        assertTrue(userStorage.findAll().contains(userStorage.getUser(2).get()));
-        assertTrue(userStorage.findAll().contains(userStorage.getUser(1).get()));
-        assertTrue(userStorage.findAll().contains(userStorage.getUser(3).get()));
+        assertTrue(userStorage.findAll().contains(userStorage.get(2).get()));
+        assertTrue(userStorage.findAll().contains(userStorage.get(1).get()));
+        assertTrue(userStorage.findAll().contains(userStorage.get(3).get()));
     }
 
     @Test

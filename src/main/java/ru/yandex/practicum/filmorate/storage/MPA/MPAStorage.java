@@ -7,8 +7,8 @@ import java.util.Collection;
 public interface MPAStorage {
     Collection<MPA> findAll();
 
-    MPA getMPA(Integer id);
+    MPA get(Integer id);
 
-    void createMPA(MPA mpa, Integer filmId);
+    void create(MPA mpa, Integer filmId);
 
 }

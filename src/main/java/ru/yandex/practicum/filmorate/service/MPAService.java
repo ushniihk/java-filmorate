@@ -18,10 +18,10 @@ public class MPAService {
         return mpaStorage.findAll();
     }
 
-    public MPA getMPA(Integer id) throws NotFoundParameterException {
+    public MPA get(Integer id) throws NotFoundParameterException {
         if (checkID(id))
             throw new NotFoundParameterException("bad id");
-        return mpaStorage.getMPA(id);
+        return mpaStorage.get(id);
     }
 
     private boolean checkID(Integer id) {

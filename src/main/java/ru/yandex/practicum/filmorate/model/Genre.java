@@ -1,22 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Comparator;
 
 @Data
+@AllArgsConstructor
 public class Genre implements Comparator<Genre> {
+
     private Integer id;
     private String name;
-
-    public Genre(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Genre() {
-        super();
-    }
 
     @Override
     public int compare(Genre o1, Genre o2) {
