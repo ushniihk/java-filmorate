@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class Film {
@@ -23,7 +25,7 @@ public class Film {
     @EqualsAndHashCode.Exclude
     private Integer rate;
     @EqualsAndHashCode.Exclude
-    private Collection<Integer> likes = new ArrayList<>();
+    private Map<Integer, Integer> likes = new HashMap<>();
     @EqualsAndHashCode.Exclude
     private Collection<Director> directors = new ArrayList<>();
 
@@ -32,7 +34,7 @@ public class Film {
     }
 
     public Film(Integer id, String name, String description, Date releaseDate, Integer duration,
-                Collection<Genre> genres, MPA mpa, Integer rate, Collection<Integer> likes, Collection<Director> directors) {
+                Collection<Genre> genres, MPA mpa, Integer rate, Map<Integer, Integer> likes, Collection<Director> directors) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,8 +47,8 @@ public class Film {
         this.directors = directors;
     }
 
-    public void addLike(Integer userId) {
-        likes.add(userId);
+    public void addLike(Integer userId, Integer mark) {
+        likes.put(userId, mark);
     }
 
     public void deleteLike(Integer userId) {

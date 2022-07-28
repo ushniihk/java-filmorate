@@ -21,7 +21,7 @@ public interface FilmStorage {
 
     Optional<Film> get(Integer id) throws NotFoundParameterException;
 
-    void createLike(Integer filmID, Integer userID);
+    void createLike(Integer filmID, Integer userID, Integer mark);
 
     void removeLike(Integer filmID, Integer userID);
 

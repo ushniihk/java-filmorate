@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,11 +41,11 @@ public class FilmDbStorageTest {
     @Test
     public void shouldCreateAndUpdateFilm() throws ValidationException, NotFoundParameterException {
         Film film1 = new Film(1, "JavaFilm", "about Java", Date.valueOf("1895-12-28"),
-                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>(), new ArrayList<>());
+                100, new ArrayList<>(), new MPA(1, "one"), 6, new HashMap<>(), new ArrayList<>());
         filmStorage.create(film1);
         assertEquals(filmStorage.findAll().size(), 4);
         Film film2 = new Film(1, "Test Film", "about Test", Date.valueOf("1895-12-28"),
-                100, new ArrayList<>(), new MPA(1, "one"), 6, new ArrayList<>(), new ArrayList<>());
+                100, new ArrayList<>(), new MPA(1, "one"), 6, new HashMap<>(), new ArrayList<>());
         filmStorage.update(film2);
         assertEquals(filmStorage.findAll().size(), 4);
     }
@@ -52,7 +53,7 @@ public class FilmDbStorageTest {
     @Test
     public void shouldAddLikeAndDelete() {
         assertEquals(filmStorage.get(3).get().getLikes().size(), 0);
-        filmStorage.createLike(3, 1);
+        filmStorage.createLike(3, 1, 6);
         assertEquals(filmStorage.get(3).get().getLikes().size(), 1);
         filmStorage.removeLike(3, 1);
         assertEquals(filmStorage.get(3).get().getLikes().size(), 0);

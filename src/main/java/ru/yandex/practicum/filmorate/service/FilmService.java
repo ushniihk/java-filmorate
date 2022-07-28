@@ -26,18 +26,16 @@ public class FilmService {
     private final UserStorage userStorage;
     private final DirectorStorage directorStorage;
 
-    public void addLike(Integer id, Integer userId) throws NotFoundParameterException {
-        if (checkID(id))
-            throw new NotFoundParameterException("bad id");
-        if (checkID(userId))
+    public void addLike(Integer id, Integer userId, Integer mark) throws NotFoundParameterException {
+        if (checkID(id) || checkID(userId))
             throw new NotFoundParameterException("bad id");
 
         Optional<Film> film = filmStorage.get(id);
         Optional<User> user = userStorage.get(userId);
 
         if (film.isPresent() && user.isPresent()) {
-            film.get().addLike(user.get().getId());
-            filmStorage.createLike(id, userId);
+            film.get().addLike(user.get().getId(), mark);
+            filmStorage.createLike(id, userId, mark);
         }
     }
 

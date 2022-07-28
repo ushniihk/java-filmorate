@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS film_likes
 (
     film_id int REFERENCES films (film_id) ON DELETE CASCADE,
     user_id int REFERENCES users (user_id) ON DELETE CASCADE,
+    mark int NOT NULL,
     primary key (film_id, user_id)
 );
 

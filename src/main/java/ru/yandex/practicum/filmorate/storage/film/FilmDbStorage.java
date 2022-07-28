@@ -18,10 +18,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Slf4j
@@ -140,9 +137,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void createLike(Integer filmID, Integer userID) {
-        String sqlQuery = "insert into FILM_LIKES(FILM_ID, USER_ID) values (?, ?)";
-        jdbcTemplate.update(sqlQuery, filmID, userID);
+    public void createLike(Integer filmID, Integer userID, Integer mark) {
+        String sqlQuery = "insert into FILM_LIKES(FILM_ID, USER_ID, MARK) values (?, ?, ?)";
+        jdbcTemplate.update(sqlQuery, filmID, userID, mark);
         eventStorage.add(userID, filmID, EventType.LIKE, EventOperations.ADD);
     }
 
@@ -288,9 +285,16 @@ public class FilmDbStorage implements FilmStorage {
         return new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));
     }
 
-    private Collection<Integer> getLikes(Integer id) {
-        String sql = "SELECT * FROM FILM_LIKES WHERE FILM_ID = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);
+    private Map<Integer, Integer> getLikes(Integer id) {
+        Map<Integer, Integer> getMArks = new HashMap<>();
+        String sql = "SELECT USER_ID FROM FILM_LIKES WHERE FILM_ID = ?";
+        Collection<Integer> users = jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);
+        for (Integer i : users) {
+            SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT MARK FROM FILM_LIKES " +
+                    "WHERE FILM_ID = ? AND USER_ID = ?", id, i);
+            getMArks.put(id, userRows.getInt("MARK"));
+        }
+        return getMArks;
     }
 
     private Integer makeLikes(ResultSet rs) throws SQLException {
