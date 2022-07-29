@@ -293,7 +293,7 @@ public class FilmDbStorage implements FilmStorage {
             SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES " +
                     "WHERE FILM_ID = ? AND USER_ID = ?", id, i);
             if (userRows.next()) {
-                getMarks.put(id, userRows.getInt("MARK"));
+                getMarks.put(i, userRows.getInt("MARK"));
             }
         }
         return getMarks;
