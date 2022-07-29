@@ -286,15 +286,17 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Map<Integer, Integer> getLikes(Integer id) {
-        Map<Integer, Integer> getMArks = new HashMap<>();
+        Map<Integer, Integer> getMarks = new HashMap<>();
         String sql = "SELECT USER_ID FROM FILM_LIKES WHERE FILM_ID = ?";
         Collection<Integer> users = jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);
         for (Integer i : users) {
-            SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT MARK FROM FILM_LIKES " +
+            SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES " +
                     "WHERE FILM_ID = ? AND USER_ID = ?", id, i);
-            getMArks.put(id, userRows.getInt("MARK"));
+            if (userRows.next()) {
+                getMarks.put(id, userRows.getInt("MARK"));
+            }
         }
-        return getMArks;
+        return getMarks;
     }
 
     private Integer makeLikes(ResultSet rs) throws SQLException {
