@@ -85,15 +85,15 @@ public class UserService {
     }
 
     private boolean hasLike(Integer id) {
-        return userStorage.getLikedFilms(id).size() == 0;
+        return userStorage.getLikedFilms(id).size() != 0;
     }
 
     private boolean hasCommonLikes(Integer id) {
-        return userStorage.getIdWithCommonLikes(id) == -1;
+        return userStorage.getIdWithCommonLikes(id) != -1;
     }
 
     private boolean hasFilmsByRecommendations(Integer id) {
-        return userStorage.getFilmsIdByRecommendations(id).size() == 0;
+        return userStorage.getFilmsIdByRecommendations(id).size() != 0;
     }
 
 }
