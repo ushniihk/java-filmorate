@@ -157,7 +157,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sort = "f.RELEASEDATE";
         if (sortBy.equals("likes")) {
-            sort = "COUNT(FL.USER_ID)";
+            sort = "AVG(FL.MARK)";
         }
         String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
                 "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort;
@@ -222,7 +222,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
                 "WHERE DIRECTOR_NAME ILIKE CONCAT('%', ?, '%') " +
                 "GROUP BY FD.DIRECTOR_ID " +
-                "ORDER BY COUNT(FL.USER_ID)";
+                "ORDER BY AVG (FL.USER_ID)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs), query);
     }
 
@@ -231,7 +231,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILMS AS F " +
                 "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
                 "WHERE F.NAME ILIKE CONCAT('%', ?, '%')" +
-                "ORDER BY COUNT(FL.USER_ID)";
+                "ORDER BY AVG(FL.USER_ID)";
         return jdbcTemplate.query(row, (rs, rowNum) -> make(rs), query);
     }
 

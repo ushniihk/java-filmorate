@@ -41,7 +41,7 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void userLikesTheFilm(@PathVariable Integer id, @PathVariable Integer userId,
-                                 @RequestParam(defaultValue = "0") Integer mark) throws NotFoundParameterException {
+                                 @RequestParam(defaultValue = "1") Integer mark) throws NotFoundParameterException {
         filmService.addLike(id, userId, mark);
     }
 

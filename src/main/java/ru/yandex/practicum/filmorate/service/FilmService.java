@@ -56,7 +56,9 @@ public class FilmService {
 
     private Collection<Film> getTopFilmsByLikes(Collection<Film> films, Integer count) {
         return films.stream()
-                .sorted(Comparator.comparingInt(f -> f.getLikes().keySet().size() * (-1)))
+                .sorted(Comparator.comparingDouble(f -> f.getLikes().values().stream()
+                        .mapToDouble(Integer::doubleValue)
+                        .average().orElse(0) * (-1)))
                 .limit(count)
                 .collect(Collectors.toList());
     }
