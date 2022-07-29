@@ -187,8 +187,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<Integer> getLikedFilms(Integer id) {
-        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
+        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ? AND MARK > 5";
+        return  jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
     }
 
     private Collection<Integer> getFriends(Integer id) {
