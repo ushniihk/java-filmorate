@@ -285,7 +285,7 @@ public class FilmDbStorage implements FilmStorage {
         return new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));
     }
 
-    private Map<Integer, Integer> getLikes(Integer id) {
+    public Map<Integer, Integer> getLikes(Integer id) {
         Map<Integer, Integer> getMarks = new HashMap<>();
         String sql = "SELECT USER_ID FROM FILM_LIKES WHERE FILM_ID = ?";
         Collection<Integer> users = jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);

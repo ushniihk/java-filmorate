@@ -153,19 +153,34 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public int getIdWithCommonLikes(int id) {
+
         Collection<Integer> usersLikes = getLikedFilms(id);
-        long count = 0;
-        int userID = -1;
-        for (Integer i : getAllID()) {
-            if (id != i) {
-                long l = getLikedFilms(i).stream().filter(usersLikes::contains).count();
-                if (l > count) {
-                    count = l;
-                    userID = i;
+        double count = 10;
+        int findUserID = -1;
+        for (Integer userID : getAllID()) {
+            if (id != userID) {
+                long l = getLikedFilms(userID).stream().filter(usersLikes::contains).count();
+                double d = getLikedFilms(userID).stream().filter(usersLikes::contains)
+                        .mapToDouble(filmID -> {
+                            try {
+                                return fuu(filmID, userID, id);
+                            } catch (NotFoundParameterException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).map(x -> x / l).sum();
+                if (d < count) {
+                    count = d;
+                    findUserID = userID;
                 }
             }
         }
-        return userID;
+        return findUserID;
+    }
+
+    private int fuu(int filmid, int userID, int id) throws NotFoundParameterException {
+        int x = filmStorage.get(filmid).get().getLikes().get(userID);
+        int y = filmStorage.get(filmid).get().getLikes().get(id);
+        return Math.abs(x - y);
     }
 
     @Override
@@ -187,7 +202,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<Integer> getLikedFilms(Integer id) {
-        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ? AND MARK > 5";
+        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
         return  jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
     }
 

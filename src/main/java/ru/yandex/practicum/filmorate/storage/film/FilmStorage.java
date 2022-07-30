@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public interface FilmStorage {
@@ -24,6 +25,8 @@ public interface FilmStorage {
     void createLike(Integer filmID, Integer userID, Integer mark);
 
     void removeLike(Integer filmID, Integer userID);
+
+    Map<Integer, Integer> getLikes(Integer id);
 
     Film make(ResultSet rs) throws SQLException;
 
