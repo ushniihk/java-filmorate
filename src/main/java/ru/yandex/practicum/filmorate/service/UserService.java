@@ -85,8 +85,7 @@ public class UserService {
     }
 
     private boolean hasLike(Integer id) {
-        Collection<Integer>collection = userStorage.getLikedFilms(id);
-        return collection.size() != 0;
+        return userStorage.getLikedFilms(id).size() != 0;
     }
 
     private boolean hasCommonLikes(Integer id) {
