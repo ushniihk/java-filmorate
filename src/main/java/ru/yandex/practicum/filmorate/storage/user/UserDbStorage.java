@@ -163,7 +163,7 @@ public class UserDbStorage implements UserStorage {
                 double d = getLikedFilms(userID).stream().filter(usersLikes::contains)
                         .mapToDouble(filmID -> {
                             try {
-                                return fuu(filmID, userID, id);
+                                return getCoefficient(filmID, userID, id);
                             } catch (NotFoundParameterException e) {
                                 throw new RuntimeException(e);
                             }
@@ -177,9 +177,9 @@ public class UserDbStorage implements UserStorage {
         return findUserID;
     }
 
-    private int fuu(int filmid, int userID, int id) throws NotFoundParameterException {
-        int x = filmStorage.get(filmid).get().getLikes().get(userID);
-        int y = filmStorage.get(filmid).get().getLikes().get(id);
+    private int getCoefficient(int filmID, int userID, int id) throws NotFoundParameterException {
+        int x = filmStorage.get(filmID).get().getLikes().get(userID);
+        int y = filmStorage.get(filmID).get().getLikes().get(id);
         return Math.abs(x - y);
     }
 
@@ -187,6 +187,7 @@ public class UserDbStorage implements UserStorage {
     public Collection<Integer> getFilmsIdByRecommendations(int id) {
         Collection<Integer> films = getLikedFilms(getIdWithCommonLikes(id));
         films.removeAll(getLikedFilms(id));
+        films.removeAll(getBadLikedFilms(getIdWithCommonLikes(id)));
         return films;
     }
 
@@ -205,6 +206,12 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ?";
         return  jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
     }
+
+    private Collection<Integer> getBadLikedFilms(Integer id) {
+        String sql = "SELECT FILM_ID FROM FILM_LIKES WHERE USER_ID = ? AND MARK < 6";
+        return  jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("FILM_ID"), id);
+    }
+
 
     private Collection<Integer> getFriends(Integer id) {
         String sql = "SELECT friend_id FROM FRIENDS WHERE USER_ID = ?";
