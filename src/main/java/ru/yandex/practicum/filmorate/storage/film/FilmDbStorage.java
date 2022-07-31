@@ -18,10 +18,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Slf4j
@@ -140,9 +137,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void createLike(Integer filmID, Integer userID) {
-        String sqlQuery = "insert into FILM_LIKES(FILM_ID, USER_ID) values (?, ?)";
-        jdbcTemplate.update(sqlQuery, filmID, userID);
+    public void createLike(Integer filmID, Integer userID, Integer mark) {
+        String sqlQuery = "insert into FILM_LIKES(FILM_ID, USER_ID, MARK) values (?, ?, ?)";
+        jdbcTemplate.update(sqlQuery, filmID, userID, mark);
         eventStorage.add(userID, filmID, EventType.LIKE, EventOperations.ADD);
     }
 
@@ -160,7 +157,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sort = "f.RELEASEDATE";
         if (sortBy.equals("likes")) {
-            sort = "COUNT(FL.USER_ID)";
+            sort = "AVG(FL.MARK)";
         }
         String sql = "SELECT * FROM FILMS_DIRECTORS FD join FILMS F on FD.FILM_ID = F.FILM_ID left join FILM_LIKES FL " +
                 "on F.FILM_ID = FL.FILM_ID WHERE FD.DIRECTOR_ID = ? GROUP BY F.FILM_ID ORDER BY " + sort;
@@ -225,7 +222,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
                 "WHERE DIRECTOR_NAME ILIKE CONCAT('%', ?, '%') " +
                 "GROUP BY FD.DIRECTOR_ID " +
-                "ORDER BY COUNT(FL.USER_ID)";
+                "ORDER BY AVG (FL.USER_ID)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> make(rs), query);
     }
 
@@ -234,7 +231,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILMS AS F " +
                 "LEFT JOIN FILM_LIKES FL ON F.FILM_ID = FL.FILM_ID " +
                 "WHERE F.NAME ILIKE CONCAT('%', ?, '%')" +
-                "ORDER BY COUNT(FL.USER_ID)";
+                "ORDER BY AVG(FL.USER_ID)";
         return jdbcTemplate.query(row, (rs, rowNum) -> make(rs), query);
     }
 
@@ -288,9 +285,18 @@ public class FilmDbStorage implements FilmStorage {
         return new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));
     }
 
-    private Collection<Integer> getLikes(Integer id) {
-        String sql = "SELECT * FROM FILM_LIKES WHERE FILM_ID = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);
+    public Map<Integer, Integer> getLikes(Integer id) {
+        Map<Integer, Integer> getMarks = new HashMap<>();
+        String sql = "SELECT USER_ID FROM FILM_LIKES WHERE FILM_ID = ?";
+        Collection<Integer> users = jdbcTemplate.query(sql, (rs, rowNum) -> makeLikes(rs), id);
+        for (Integer i : users) {
+            SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES " +
+                    "WHERE FILM_ID = ? AND USER_ID = ?", id, i);
+            if (userRows.next()) {
+                getMarks.put(i, userRows.getInt("MARK"));
+            }
+        }
+        return getMarks;
     }
 
     private Integer makeLikes(ResultSet rs) throws SQLException {

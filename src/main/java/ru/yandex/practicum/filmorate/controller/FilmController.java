@@ -40,8 +40,9 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void userLikesTheFilm(@PathVariable Integer id, @PathVariable Integer userId) throws NotFoundParameterException {
-        filmService.addLike(id, userId);
+    public void userLikesTheFilm(@PathVariable Integer id, @PathVariable Integer userId,
+                                 @RequestParam(defaultValue = "1") Integer mark) throws NotFoundParameterException {
+        filmService.addLike(id, userId, mark);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
@@ -50,7 +51,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getTop(@RequestParam(defaultValue = "10") Integer count, @RequestParam(required = false) Integer genreId, @RequestParam(required = false) String year) throws IncorrectParameterException {
+    public Collection<Film> getTop(@RequestParam(defaultValue = "10") Integer count,
+                                   @RequestParam(required = false) Integer genreId,
+                                   @RequestParam(required = false) String year) throws IncorrectParameterException {
         return filmService.getPopularByParams(count, genreId, year);
     }
 
