@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.Genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MPA.MPAStorage;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 
+import javax.validation.ValidationException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
