@@ -1,8 +1,9 @@
 # java-filmorate
-Template repository for Filmorate project.
+Backend for a service (social network) that works with movies and user evaluations and recommends viewing movies based on preferences of people with similar interests (developed on Spring boot & PostgresSQL)
+Service can returns the top 5 movies recommended for viewing
 
-Ссылка на диаграмму https://app.quickdatabasediagrams.com/#/d/OlBLkG
+at the root there are Postman tests to see the functionality
 
-![а вот и картинка](https://github.com/ushniihk/java-filmorate/blob/main/QuickDBD-export.png?raw=true)
+STACK: Spring Boot, PostgreSQL, JDBC
 
     
